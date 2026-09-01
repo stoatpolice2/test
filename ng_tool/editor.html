@@ -217,7 +217,7 @@
         <button class="snippet-btn snippet-btn-val" data-snippet="favor:charaB:10">favor:charaB</button>
         <button class="snippet-btn snippet-btn-val" data-snippet="favor:charaC:10">favor:charaC</button>
       </div>
-      <!-- 文字色装飾タググループ（新規追加） -->
+      <!-- 文字色装飾タググループ -->
       <div class="snippet-group">
         <button class="snippet-btn snippet-btn-red" data-tag-color="red">文字:赤</button>
         <button class="snippet-btn snippet-btn-blue" data-tag-color="blue">文字:青</button>
@@ -236,14 +236,17 @@
 </main>
 
 <script>
-  // 1. ノベルゲーム用独自構文ハイライターの定義
+  // 1. ノベルゲーム用独自構文ハイライターの定義（修正版）
   CodeMirror.defineMode("novel-scenario", function() {
     return {
       token: function(stream) {
+        // コメント行（# または //）
         if (stream.sol() && (stream.match("#") || stream.match("//"))) {
           stream.skipToEnd();
           return "scenario-comment";
         }
+
+        // @コマンド行
         if (stream.sol() && stream.match("@")) {
           if (stream.match("label")) {
             stream.skipToEnd();
@@ -252,16 +255,22 @@
           stream.eatWhile(/[a-zA-Z]/);
           return "scenario-command";
         }
-        if (stream.match(/^[^:@\n]+(?=:)/)) {
+
+        // 話者名（行頭にある最初の「名前:」のみを黄色表示にする）
+        if (stream.sol() && stream.match(/^[^:@<>\n\s]+(?=:)/)) {
           return "scenario-speaker";
         }
-        if (stream.eat("|") || stream.eat("/")) {
-          return "scenario-param";
-        }
+
         // <color:...> や </color> タグのハイライト
         if (stream.match(/<\/color>/i) || stream.match(/<color:[^>]+>/i)) {
           return "scenario-tag";
         }
+
+        // パラメータ区切り文字（| や /）
+        if (stream.eat("|") || stream.eat("/")) {
+          return "scenario-param";
+        }
+
         stream.next();
         return null;
       }
@@ -300,11 +309,9 @@
     const selection = doc.getSelection();
     
     if (selection) {
-      // テキストを選択中の場合はタグで挟み込む
       const wrappedText = `<color:${color}>${selection}</color>`;
       doc.replaceSelection(wrappedText);
     } else {
-      // 選択していない場合はテンプレートを挿入
       const template = `<color:${color}>テキスト</color>`;
       insertSnippet(template);
     }
