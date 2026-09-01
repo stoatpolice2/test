@@ -609,7 +609,7 @@
 
   // 共通定数設定
   const TITLE_BGM_URL = "sound/sound01.mp3";
-  const ENDING_BGM_URL = "sound/ending.mp3";
+  const ENDING_BGM_URL = "sound/sound01.mp3";
   const SOUND_EFFECTS = {
     click: "sound/click.mp3",
     type: "sound/type.mp3",
@@ -668,6 +668,7 @@
   let currentSceneId = 0;
   let typeTimer = null;
   let autoTimer = null;
+  let creditsTimer = null; // スタッフロール自動進行用タイマー
   let isTyping = false;
   let isFading = false;
   let fullText = "";
@@ -1060,6 +1061,7 @@
 
   function showTitleUI() {
     stopAutoSkip();
+    clearTimeout(creditsTimer); // タイマーのクリア処理
     titleScreenEl.style.display = "flex";
     staffCreditsEl.style.display = "none";
     messageBoxEl.style.display = "none";
@@ -1076,6 +1078,8 @@
   }
 
   function renderCreditStep(index) {
+    clearTimeout(creditsTimer); // タイマーの重複を防ぐためクリア
+
     const data = creditsData[index];
     if (!data) return;
 
@@ -1085,6 +1089,7 @@
       creditsTextAreaEl.style.display = "none";
       thanksTextEl.style.display = "block";
       isFinalCreditScreen = true;
+      // 最終画面ではタイマーを設定せずクリック待機
     } else {
       creditsImgAreaEl.style.width = "50%";
       creditsImgAreaEl.style.backgroundImage = `url('${data.img}')`;
@@ -1098,12 +1103,18 @@
       });
       creditsTextAreaEl.innerHTML = html;
       isFinalCreditScreen = false;
+
+      // 3秒（3000ms）後に自動で次のステップへ進むタイマーをセット
+      creditsTimer = setTimeout(() => {
+        nextCreditStep();
+      }, 3000);
     }
   }
 
   function nextCreditStep() {
     if (isFading) return;
 
+    // 「Thanks for playing!」画面の場合のみ、クリックでタイトル画面へ戻る
     if (isFinalCreditScreen) {
       playSe(SOUND_EFFECTS.click);
       fadeOverlayEl.classList.add("is-active");
@@ -1114,6 +1125,7 @@
       return;
     }
 
+    // 途中の画面の自動進行処理
     currentCreditIndex++;
     if (currentCreditIndex >= creditsData.length) return;
 
@@ -1276,6 +1288,7 @@
           favorText = data.favorability ?? 0;
         }
 
+        <!-- セーブ・ロード画面に文字を表示する -->
         previewEl.textContent = `${data.speaker}: ${shortText} (${favorText})`;
         dateEl.textContent = data.savedAt;
       } else {
@@ -1515,7 +1528,10 @@
   }, { passive: true });
 
   staffCreditsEl.addEventListener("click", () => {
-    nextCreditStep();
+    // 最後の画面でのみクリックによるタイトル遷移を許可
+    if (isFinalCreditScreen) {
+      nextCreditStep();
+    }
   });
 
   document.addEventListener("keydown", (e) => {
@@ -1525,7 +1541,9 @@
       skipBtnEl.click();
     } else if (e.key === "Enter") {
       if (isCreditsActive) {
-        nextCreditStep();
+        if (isFinalCreditScreen) {
+          nextCreditStep();
+        }
       } else if (messageBoxEl.style.display === "block" && logModalEl.style.display !== "flex") {
         messageBoxEl.click();
       }

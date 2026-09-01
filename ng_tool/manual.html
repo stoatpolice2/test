@@ -552,12 +552,12 @@
 
     <section id="sec1">
       <h2>1. ツールの特徴・構成</h2>
-      <p>本ツールは、プログラミングの知識がなくてもノベルゲームを作成できるゲームエンジンです。</p>
-      <p>最低限の機能を備えたシンプルで軽量なツールとなっており、手軽にノベルゲームを制作できます。</p>
+      <p>本ツールは、プログラミングの知識がなくてもノベルゲームを作成できるゲームエンジンです。<br>
+      最低限の機能を備えたシンプルで軽量なツールとなっており、手軽にノベルゲームを制作できます。</p>
 
       <div class="alert-box">
-        <h4>※ 無料サーバーご利用時の注意点</h4>
-        <p>広告が自動挿入されるタイプの無料サーバーをご利用の場合、サーバー側が挿入する広告コードの影響でプレビューやゲーム画面のレイアウトが意図通りに表示されない場合があります。</p>
+        <h4>【無料サーバーご利用時の注意点】</h4>
+        <p>広告が自動挿入されるタイプの無料サーバーをご利用の場合、サーバー側が挿入する広告コードの影響で「プレビューやゲーム画面のレイアウトが意図通りに表示されない」「一部演出タグ（文字色指定など）が正常に表示されない」といった不具合が発生する場合があります。</p>
         <p>動作確認・運用の際は、広告非表示のサーバーや、エディタ（VS Code や PhoenixCode）のローカルプレビュー機能のご利用を推奨いたします。</p>
       </div>
 
@@ -569,27 +569,45 @@
       <ul>
         <li><code>index.html</code> : ゲームのシステム本体（プレイヤーが遊ぶ画面）</li>
         <li><code>editor.html</code> : プレビュー付きシナリオエディタ（制作・編集用）</li>
+        <li><code>debug.html</code> : 変数管理＆デバッグツール（テストプレイ・動作確認用）</li>
         <li><code>scenario.txt</code> : ゲームのシナリオファイル（テキスト編集で作品を作ります）</li>
         <li><code>Readme.txt</code> : 説明書ファイル</li>
       </ul>
+      
+        <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            最初から長編は作ろうとせず、まずは「会話シーン」だけ作ってみて、それから「選択肢による分岐」も入れてみて、更に「変数によるイベント分岐」も入れてみて…と徐々に制作に慣れていくのがおすすめだよ！
+          </div>
+        </div>
+      </div>
       
       <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
     </section>
 
     <section id="sec2">
       <h2>2. 制作・動作確認</h2>
-      <p>本ツールには、ブラウザ上でシナリオを作成できる「専用エディタ」が付属しています。<br>「editor.html」をブラウザ（Chrome, Edge, Safari等）で開いてご使用ください。</p>
+      <p>本ツールには、ブラウザ上でシナリオを作成できる「専用エディタ」と、分岐や変数の挙動をリアルタイムで検証できる「変数管理＆デバッグツール」が付属しています。<br>「editor.html」や「debug.html」をブラウザ（Chrome, Edge, Safari等）で開いてご使用ください。</p>
 
       <div class="alert-box">
-        <h4>【エディタ起動時の注意点】</h4>
-        <p>専用エディタを使用する際は VS Code や PhoenixCode のプレビュー機能から開くか、サーバーにアップロードしてご利用ください。ファイルを直接ダブルクリックして開くとローカルファイルのセキュリティ制限（CORS制限）を受けるため正しく動作しません。</p>
+        <h4>【エディタ・デバッグツール起動時の注意点】</h4>
+        <p>ツールを使用する際は VS Code や PhoenixCode のプレビュー機能から開くか、ローカルサーバー経由・Webサーバーにアップロードしてご利用ください。ファイルを直接ダブルクリックして開くとローカルファイルのセキュリティ制限（CORS制限等）を受けるため、通信やファイルの読み込みが正しく動作しない場合があります。</p>
       </div>
 
+      <h3>専用エディタ（editor.html）の特長・機能</h3>
+      
       <div class="image-placeholder">
-        【サンプル画像スペース 2：editor.html の二分割画面キャプチャ】
+        【サンプル画像スペース 2：editor.htmlの画面キャプチャ】
       </div>
-
-      <h3>エディタの特長・機能</h3>
+      
       <ul>
         <li><span class="badge">画面上部（ツールバー）</span> ボタンをクリックすることで、コマンド名やよく使う値をワンタップで入力できます。</li>
         <li><span class="badge">画面左側（テキストエディタ）</span> 構文強調（シンタックスハイライト）機能付きです。@コマンド、話者名（名前:）、コメント行などが自動で色分け表示されます。</li>
@@ -597,6 +615,48 @@
         <li><span class="badge">ファイルを開く</span> すでに作成したシナリオファイル（scenario.txt）を読み込んで再編集できます。</li>
         <li><span class="badge">scenario.txt を保存</span> 編集が完了したら、このボタンを押すだけでゲームにそのまま読み込める「scenario.txt」がダウンロード保存されます。</li>
       </ul>
+
+      <h3>変数管理＆デバッグツール（debug.html）の機能と使い方</h3>
+      <p>ゲーム本体（index.html）と並べて開くことで、ブラウザ間のリアルタイム通信機能（BroadcastChannel API）を通じてゲームの状態を外部から確認・操作できます。シナリオ後半のテストや分岐条件のチェックに活用してください。</p>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース 2：debug.html の画面キャプチャ】
+      </div>
+
+      <ul>
+        <li><span class="badge">変数のパラメータ調整</span>
+          変数のパラメータ（<code>charaA</code>、<code>charaB</code>、<code>charaC</code>）の現在値をリアルタイムに監視できます。数値入力欄から直接任意の値を設定し「反映」を押すか、「全パラメータを一括変更」でテストしたい数値へ即座に変更できます。
+        </li>
+        <li><span class="badge">指定シーンへジャンプ</span>
+          目的のシーンIDを指定して「ジャンプ」ボタンを押すことで、シナリオの任意の場所へ一瞬で移動できます。長編シナリオの途中確認やエンディング演出のテストに最適です。
+        </li>
+        <li><span class="badge">リアルタイムプレビュー</span>
+          現在ゲーム側で表示されている「話者名」と「テキスト（演出タグを除去した純粋な文章）」が自動更新され、進行状況をひと目で把握できます。
+        </li>
+      </ul>
+
+      <h4>【デバッグツールの連携手順】</h4>
+      <ol>
+        <li>「index.html（ゲーム本体）」と「debug.html（デバッグツール）」を同じブラウザで同時に開きます。</li>
+        <li>デバッグツール側の「現在のシーンID」や「パラメータ」に現在のゲーム状態が自動で反映されます。</li>
+        <li>パラメータを書き換えて「反映」ボタンを押したり、シーンIDを指定して「ジャンプ」を行うと、ゲーム本体側が即座に同期して表示が切り替わります。</li>
+      </ol>
+
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            複雑な分岐を作るときは、デバッグツール（debug.html）を使ってパラメータを書き換えながらチェックするとテストプレイがすっごく楽になるから試してみてね！
+          </div>
+        </div>
+      </div>
 
       <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
     </section>
@@ -610,7 +670,7 @@
         <pre><code>@bg: images/bg01.webp
 @bgm: sound/sound01.mp3
 @character: images/honoka.webp|pos:center
-ほのか:こんにちは！『ノベルゲーム制作ツール』へようこそ！
+ほのか:こんにちは！『<color:red>ノベルゲーム制作ツール</color>』へようこそ！
 
 目が覚めると、見知らぬ部屋にいた……。
 # ここはコメント行です（ゲーム内には表示されません）</code></pre>
@@ -621,6 +681,7 @@
         <li><b>話者名とセリフ</b>：話者名とセリフはコロン「<code>:</code>」で区切ります。（例：<code>ほのか:こんにちは！</code>）</li>
         <li><b>地の文</b>：「<code>:</code>」がない行は、話者名なしの「地の文（ト書き）」になります。（例：<code>目が覚めると、見知らぬ部屋にいた……。</code>）</li>
         <li><b>演出コマンド</b>：「<code>@</code>」から始まる行は、背景変更やBGM再生などのシステム命令です。</li>
+        <li><b>文字色の指定</b>：セリフや地の文の中で <code>&lt;color:色指定&gt;強調したい文字&lt;/color&gt;</code> と書くと部分的に文字の色を変えられます。（例：<code>&lt;color:red&gt;危険！&lt;/color&gt;</code>、<code>&lt;color:#ff9900&gt;重要メッセージ&lt;/color&gt;</code>）</li>
         <li><b>指定の継続</b>：指定（@bg や @character など）を省略した行は、直前の状態がそのまま維持されます。</li>
         <li><b>コメント行</b>：「<code>#</code>」または「<code>//</code>」で始まる行はコメント（メモ書き）となり、ゲームには表示されません。</li>
       </ul>
@@ -645,18 +706,23 @@
 
     <section id="sec4">
       <h2>4. 演出コマンド一覧</h2>
-      <p>シナリオ内で使用できる主要な演出コマンド一覧です。</p>
+      <p>シナリオ内で使用できる主要な演出コマンドおよび装飾タグの一覧です。</p>
 
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>コマンド</th>
+              <th>コマンド・タグ</th>
               <th>記述例</th>
               <th>説明</th>
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>文字色の指定</td>
+              <td><code>&lt;color:[色指定]&gt;文章&lt;/color&gt;</code></td>
+              <td>テキスト内の特定の文字に色を付けます。<br>色名（<code>red</code>, <code>yellow</code> など）やカラーコード（<code>#ff0000</code> など）で指定できます。<br>（例：<code>&lt;color:red&gt;危険！&lt;/color&gt;</code>）</td>
+            </tr>
             <tr>
               <td>背景画像の変更</td>
               <td><code>@bg: [画像パス]</code></td>
@@ -704,10 +770,10 @@
         </table>
       </div>
       
-      <div class="chara-commentary">
+        <div class="chara-commentary">
         <div class="chara-commentary-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          ほのかのワンポイントアドバイス！
+          変数ってなに？
         </div>
         
         <div class="chat-row">
@@ -715,7 +781,7 @@
             <img src="images/honoka.webp" alt="ほのか">
           </div>
           <div class="chat-bubble">
-            最初から長編は作ろうとせず、まずは「会話シーン」だけ作ってみて、それから「選択肢による分岐」も入れてみて、更に「変数によるイベント分岐」も入れてみて…と徐々に制作に慣れていくのがおすすめだよ！
+            「変数」っていうのは<strong>ゲーム内で変化する数値や文字を一時的に保存しておく「箱」</strong>のことなんだ！「好感度によるイベントの分岐」や、「プレイヤーが入力した名前をテキストに反映させる」など、いろんな部分で利用されるんだよ。更に詳しく知りたい人は<a href="favor.html">こちらのページ</a>を読んでみてね！
           </div>
         </div>
       </div>
@@ -757,7 +823,8 @@
             <img src="images/honoka.webp" alt="ほのか">
           </div>
           <div class="chat-bubble">
-            「index.html」は「scenario.txt」とは違って独自タグは使用していないから、<strong>専用エディタよりも「VS Code」や「Phoenix Code」のようなコードエディタのほうが編集しやすいよ！</strong>編集したいタグを探すときはこういったエディタに備わっている「検索機能」を活用しよう！
+            「index.html」は「scenario.txt」とは違って独自タグは使用していないから、<strong>専用エディタよりも「VS Code」や「Phoenix Code」のようなコードエディタのほうが編集しやすいよ！</strong><br>
+            コードの中から編集したい部分を探すのは大変だから、こういったエディタに備わっている検索機能を活用しよう！
           </div>
         </div>
       </div>
@@ -821,6 +888,22 @@ const SOUND_EFFECTS = {
 };</code></pre>
       </div>
       
+        <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          変数を非表示にしたいときは？
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            「変数はバックグラウンドでの処理のみに使いたいので画面には表示したくない」という場合は下記の方法で非表示にしてね！
+          </div>
+        </div>
+      </div>
+      
       <h3>好感度(変数)を非表示にする</h3>
       <p>画面左上に表示される好感度（変数）を非表示にしたい場合は以下の部分を削除してください。</p>
       <div class="code-block-wrapper">
@@ -829,20 +912,23 @@ const SOUND_EFFECTS = {
 &lt;div id="favor-display"&gt;&lt;/div&gt;</code></pre>
       </div>
       
-      <div class="chara-commentary">
-        <div class="chara-commentary-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          変数ってなに？
-        </div>
+      <h3>セーブ・ロード画面で好感度（変数）を非表示にする</h3>
+      <p>セーブ・ロード画面に表示される好感度（変数）を非表示にしたい場合は以下の部分を変更してください。</p>
+      <p>まず、updateModalSlots 関数内にある以下の行を探します。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>&lt;!-- セーブ・ロード画面に文字を表示する --&gt;
+ previewEl.textContent = `${data.speaker}: ${shortText} (${favorText})`;</code></pre>
+      <p>この部分から (${favorText}) を削除して、以下のように書き換えてください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>&lt;!-- セーブ・ロード画面に文字を表示する --&gt;
+ previewEl.textContent = `${data.speaker}: ${shortText}`;</code></pre>
+      </div>
         
-        <div class="chat-row">
-          <div class="chat-avatar">
-            <img src="images/honoka.webp" alt="ほのか">
-          </div>
-          <div class="chat-bubble">
-            「変数」っていうのは<strong>ゲーム内で変化する数値や文字を一時的に保存しておく「箱」</strong>のことなんだ！「好感度によるイベントの分岐」や、「プレイヤーが入力した名前をテキストに反映させる」など、いろんな部分で利用されるんだよ。更に詳しく知りたい人は<a href="favor.html">こちらのページ</a>を読んでみてね！
-          </div>
-        </div>
+        <div class="alert-box">
+        <h4>⚠️「`;」まで削除しないように注意！</h4>
+        <p>行の末尾にある「`;」を削除してしまうとゲームが正常に動作しなくなります。誤って削除してしまわないようにご注意ください。</p>
       </div>
       
       <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
@@ -897,6 +983,11 @@ const SOUND_EFFECTS = {
       <p>作品の雰囲気に合わせて、以下のコードブロックを丸ごとコピーして <code>:root { ... }</code> 部分に上書き貼り付けして利用できます。</p>
 
       <h4>1. ダーク・サイバー風（クール・SF系）</h4>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース】
+      </div>
+      
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
@@ -924,6 +1015,11 @@ const SOUND_EFFECTS = {
       </div>
 
       <h4>2. モノクロ・シック風（ミステリー・シリアス・ホラー系）</h4>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース】
+      </div>
+      
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
@@ -951,6 +1047,11 @@ const SOUND_EFFECTS = {
       </div>
 
       <h4>3. 和風・レトロ風（時代物・伝奇系）</h4>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース】
+      </div>
+      
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
@@ -978,6 +1079,11 @@ const SOUND_EFFECTS = {
       </div>
 
       <h4>4. キュート・パステル風（恋愛・日常・ポップ系）</h4>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース】
+      </div>
+      
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
@@ -1005,6 +1111,11 @@ const SOUND_EFFECTS = {
       </div>
 
       <h4>5. ゴシック・ダークホラー風（サスペンス・伝奇・ダークファンタジー系）</h4>
+      
+      <div class="image-placeholder">
+        【サンプル画像スペース】
+      </div>
+      
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
@@ -1067,7 +1178,7 @@ const SOUND_EFFECTS = {
             <img src="images/honoka.webp" alt="ほのか">
           </div>
           <div class="chat-bubble">
-            「もっと演出をこだわりたい！」「もっと複雑なゲームを作りたい！」と感じたら、「ティラノビルダー」や「RPGツクール」などの高性能なゲーム制作エンジンを使ってみるのもいいと思うよ！
+            「もっと演出をこだわりたい！」「もっと複雑なゲームを作りたい！」と感じたら、「ティラノスクリプト」や「RPGツクール」などの高性能なゲーム制作エンジンを使ってみるのもいいと思うよ！
           </div>
         </div>
       </div>

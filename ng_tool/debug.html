@@ -111,15 +111,15 @@
 
   <h1>ノベルゲーム 変数管理ツール</h1>
 
-  <!-- キャラクター別 好感度管理 -->
+  <!-- キャラクター別 好感度・ステータス管理 -->
   <div class="card">
-    <label>好感度パラメータ (favorability)</label>
+    <label>好感度・ステータスパラメータ (favorability)</label>
     
     <div id="favor-container">
-      <!-- JSで動的にキャラごとの入力欄を生成します -->
+      <!-- JSで動的に入力欄を生成 -->
     </div>
 
-    <button class="btn-apply-all" onclick="setAllFavorability()">全好感度を一括変更</button>
+    <button class="btn-apply-all" onclick="setAllFavorability()">全パラメータを一括変更</button>
   </div>
 
   <!-- シーン・進行管理 -->
@@ -155,28 +155,26 @@
 
     // ゲームからの通知を受信してUIを更新
     channel.onmessage = (event) => {
-    const data = event.data;
-    if (data.type === 'STATE_UPDATE') {
-      renderFavorInputs(data.favorability);
-      document.getElementById('scene-id-disp').textContent = data.currentSceneId;
-      document.getElementById('speaker-disp').textContent = data.currentSpeaker ? `【${data.currentSpeaker}】` : '（話者なし）';
-
-      // <color:...>タグを取り除いてプレビュー表示する
-      const cleanText = (data.currentText || '').replace(/<color:(.*?)>(.*?)<\/color>/g, '$2');
-      document.getElementById('text-disp').textContent = cleanText;
-    }
-  };
+      const data = event.data;
+      if (data.type === 'STATE_UPDATE') {
+        renderFavorInputs(data.favorability);
+        document.getElementById('scene-id-disp').textContent = data.currentSceneId;
+        document.getElementById('speaker-disp').textContent = data.currentSpeaker ? `【${data.currentSpeaker}】` : '（話者なし）';
+        
+        // <color:...> タグを取り除いた純粋なテキストをプレビュー表示
+        const cleanText = (data.currentText || '').replace(/<color:(.*?)>(.*?)<\/color>/g, '$2');
+        document.getElementById('text-disp').textContent = cleanText;
+      }
+    };
 
     // キャラごとの入力UIを動的に生成・更新
     function renderFavorInputs(favorability) {
       const container = document.getElementById('favor-container');
       
-      // オブジェクトでない場合のフォールバック
       if (typeof favorability !== "object" || favorability === null) {
         favorability = { charaA: Number(favorability) || 0, charaB: 0, charaC: 0 };
       }
 
-      // 既存の入力欄があれば値を更新、なければ作成
       for (const [key, val] of Object.entries(favorability)) {
         let row = document.getElementById(`favor-row-${key}`);
         const displayName = FAVOR_NAME_MAP[key] || key;
@@ -197,7 +195,6 @@
           `;
           container.appendChild(row);
         } else {
-          // フォーカス中（入力中）でなければ値を最新にする
           const input = document.getElementById(`favor-input-${key}`);
           if (document.activeElement !== input) {
             input.value = val;
@@ -206,7 +203,7 @@
       }
     }
 
-    // 特定のキャラクター1人の好感度を変更
+    // 特定パラメータのみ変更
     function setSingleFavorability(targetKey) {
       const val = document.getElementById(`favor-input-${targetKey}`).value;
       channel.postMessage({
@@ -216,7 +213,7 @@
       });
     }
 
-    // 全キャラクターの好感度を一括変更
+    // 全パラメータを一括変更
     function setAllFavorability() {
       const updatedFavor = {};
       const inputs = document.querySelectorAll('[id^="favor-input-"]');
