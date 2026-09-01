@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>scenario.txt プレビューエディタ</title>
+  
+  <!-- CodeMirror ライブラリの読み込み -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #181825;
+      color: #cdd6f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ヘッダーツールバー */
+    header {
+      background-color: #11111b;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #313244;
+      height: 50px;
+    }
+
+    h1 { font-size: 16px; color: #f9e2af; font-weight: bold; }
+
+    .btn-group { display: flex; gap: 10px; align-items: center; }
+
+    button, label.file-label {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background-color: #89b4fa; color: #11111b; }
+    .btn-primary:hover { background-color: #b4befe; }
+
+    .btn-secondary { background-color: #45475a; color: #cdd6f4; }
+    .btn-secondary:hover { background-color: #585b70; }
+    
+    .btn-preview { background-color: #a6e3a1; color: #11111b; }
+    .btn-preview:hover { background-color: #b3f0af; }
+
+    input[type="file"] { display: none; }
+
+    /* メインコンテナ（左右分割） */
+    main {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      width: 100%;
+    }
+
+    /* 左側：エディタ領域 */
+    .editor-pane {
+      width: 50%;
+      height: 100%;
+      border-right: 2px solid #313244;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* スニペット入力補助ツールバー */
+    .snippet-bar {
+      background-color: #181825;
+      border-bottom: 1px solid #313244;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .snippet-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      border-right: 1px solid #313244;
+      padding-right: 8px;
+      margin-right: 4px;
+    }
+
+    .snippet-group:last-child {
+      border-right: none;
+    }
+
+    .snippet-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 4px;
+      border: 1px solid #45475a;
+      background-color: #313244;
+      color: #cdd6f4;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .snippet-btn:hover {
+      background-color: #585b70;
+      border-color: #89b4fa;
+      color: #ffffff;
+    }
+
+    .snippet-btn-cmd { color: #f38ba8; }  /* コマンド系ボタン */
+    .snippet-btn-val { color: #89dceb; }  /* パラメータ系ボタン */
+    
+    /* 文字色装飾系ボタン */
+    .snippet-btn-red   { color: #f38ba8; border-color: #f38ba8; }
+    .snippet-btn-blue  { color: #89b4fa; border-color: #89b4fa; }
+    .snippet-btn-green { color: #a6e3a1; border-color: #a6e3a1; }
+
+    .CodeMirror {
+      flex: 1;
+      height: auto;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* 右側：プレビュー領域 */
+    .preview-pane {
+      width: 50%;
+      height: 100%;
+      background-color: #050a14;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .preview-header {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 12px;
+      color: #a6adc8;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 10px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ハイライト色カスタマイズ */
+    .cm-scenario-command { color: #f38ba8 !important; font-weight: bold; }
+    .cm-scenario-speaker { color: #f9e2af !important; font-weight: bold; }
+    .cm-scenario-label   { color: #a6e3a1 !important; font-weight: bold; }
+    .cm-scenario-comment { color: #6c7086 !important; font-style: italic; }
+    .cm-scenario-param   { color: #89dceb !important; }
+    .cm-scenario-tag     { color: #f5c2e7 !important; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>scenario.txt プレビューエディタ</h1>
+  <div class="btn-group">
+    <button id="preview-btn" class="btn-preview">▶ プレビュー再生</button>
+    <label class="file-label btn-secondary">
+      ファイルを開く
+      <input type="file" id="file-input" accept=".txt">
+    </label>
+    <button id="download-btn" class="btn-primary">scenario.txt を保存</button>
+  </div>
+</header>
+
+<main>
+  <!-- 左半球：テキストエディタ -->
+  <div class="editor-pane">
+    <!-- スニペット入力補助ツールバー -->
+    <div class="snippet-bar">
+      <!-- 演出コマンドグループ -->
+      <div class="snippet-group">
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@bg: images/">@bg</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@bgm: sound/">@bgm</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@character: images/|pos:center">@character</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@fade: true">@fade</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@label: ">@label</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@choice: 選択肢1|next:label1|favor:charaA:10 / 選択肢2|next:label2|favor:charaB:10">@choice</button>
+      </div>
+      <!-- 分岐コマンドグループ -->
+      <div class="snippet-group">
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:single|chara:charaA|border:10|target:happy_end|else:normal_end">@branch(個別)</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:max|else:normal_end">@branch(最多)</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:multi|cond:charaA>=10,charaB>=10|target:true_end|else:normal_end">@branch(複合)</button>
+      </div>
+      <!-- パラメータ補助グループ -->
+      <div class="snippet-group">
+        <button class="snippet-btn snippet-btn-val" data-snippet="favor:charaA:10">favor:charaA</button>
+        <button class="snippet-btn snippet-btn-val" data-snippet="favor:charaB:10">favor:charaB</button>
+        <button class="snippet-btn snippet-btn-val" data-snippet="favor:charaC:10">favor:charaC</button>
+      </div>
+      <!-- 文字色装飾タググループ（新規追加） -->
+      <div class="snippet-group">
+        <button class="snippet-btn snippet-btn-red" data-tag-color="red">文字:赤</button>
+        <button class="snippet-btn snippet-btn-blue" data-tag-color="blue">文字:青</button>
+        <button class="snippet-btn snippet-btn-green" data-tag-color="green">文字:緑</button>
+      </div>
+    </div>
+
+    <textarea id="editor"></textarea>
+  </div>
+
+  <!-- 右半球：ゲームプレビュー (index.htmlをiframeで表示) -->
+  <div class="preview-pane">
+    <div class="preview-header">PREVIEW</div>
+    <iframe id="preview-frame" src="index.html"></iframe>
+  </div>
+</main>
+
+<script>
+  // 1. ノベルゲーム用独自構文ハイライターの定義
+  CodeMirror.defineMode("novel-scenario", function() {
+    return {
+      token: function(stream) {
+        if (stream.sol() && (stream.match("#") || stream.match("//"))) {
+          stream.skipToEnd();
+          return "scenario-comment";
+        }
+        if (stream.sol() && stream.match("@")) {
+          if (stream.match("label")) {
+            stream.skipToEnd();
+            return "scenario-label";
+          }
+          stream.eatWhile(/[a-zA-Z]/);
+          return "scenario-command";
+        }
+        if (stream.match(/^[^:@\n]+(?=:)/)) {
+          return "scenario-speaker";
+        }
+        if (stream.eat("|") || stream.eat("/")) {
+          return "scenario-param";
+        }
+        // <color:...> や </color> タグのハイライト
+        if (stream.match(/<\/color>/i) || stream.match(/<color:[^>]+>/i)) {
+          return "scenario-tag";
+        }
+        stream.next();
+        return null;
+      }
+    };
+  });
+
+  // 初期編集テキスト
+  const initialText = `@bg: images/bg01.webp
+@bgm: 
+@character: images/honoka.webp|pos:center
+ほのか:文字の色を変えるタグにも対応したよ！
+
+ほのか:<color:red>赤色</color>や<color:blue>青色</color>、<color:green>緑色</color>の文字で演出を盛り上げよう！`;
+
+  // 2. CodeMirrorエディタの初期化
+  const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    mode: "novel-scenario",
+    theme: "dracula",
+    lineNumbers: true,
+    lineWrapping: true
+  });
+
+  editor.setValue(initialText);
+
+  // 3. スニペット・カラータグ挿入処理
+  function insertSnippet(text) {
+    const doc = editor.getDoc();
+    const cursor = doc.getCursor();
+    
+    doc.replaceRange(text, cursor);
+    editor.focus();
+  }
+
+  function insertColorTag(color) {
+    const doc = editor.getDoc();
+    const selection = doc.getSelection();
+    
+    if (selection) {
+      // テキストを選択中の場合はタグで挟み込む
+      const wrappedText = `<color:${color}>${selection}</color>`;
+      doc.replaceSelection(wrappedText);
+    } else {
+      // 選択していない場合はテンプレートを挿入
+      const template = `<color:${color}>テキスト</color>`;
+      insertSnippet(template);
+    }
+    editor.focus();
+  }
+
+  // スニペットボタンのイベント登録
+  document.querySelectorAll('.snippet-btn').forEach(button => {
+    button.addEventListener('click', function() {
+      const snippet = this.getAttribute('data-snippet');
+      const tagColor = this.getAttribute('data-tag-color');
+      
+      if (tagColor) {
+        insertColorTag(tagColor);
+      } else if (snippet) {
+        insertSnippet(snippet);
+      }
+    });
+  });
+
+  // 4. 手動プレビュー同期処理
+  const previewFrame = document.getElementById("preview-frame");
+  const previewBtn = document.getElementById("preview-btn");
+
+  function updatePreview() {
+    const scenarioText = editor.getValue();
+    
+    if (previewFrame.contentWindow && typeof previewFrame.contentWindow.updateScenarioFromText === 'function') {
+      previewFrame.contentWindow.updateScenarioFromText(scenarioText);
+    }
+  }
+
+  previewBtn.addEventListener("click", updatePreview);
+
+  // 5. txtファイルの読み込み機能
+  document.getElementById("file-input").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      editor.setValue(e.target.result);
+    };
+    reader.readAsText(file);
+  });
+
+  // 6. scenario.txt のダウンロード機能
+  document.getElementById("download-btn").addEventListener("click", function() {
+    const text = editor.getValue();
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "scenario.txt";
+    a.click();
+    
+    URL.revokeObjectURL(url);
+  });
+</script>
+
+</body>
+</html>

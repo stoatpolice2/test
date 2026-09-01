@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ノベルゲーム 変数管理・デバッグツール</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: #111827;
+      color: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 18px;
+      border-bottom: 2px solid #374151;
+      padding-bottom: 8px;
+      color: #ffd166;
+      margin-top: 0;
+    }
+    .card {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #374151;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .chara-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111827;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid #374151;
+    }
+    .chara-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .chara-name {
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 14px;
+    }
+    .chara-key {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .input-group {
+      display: flex;
+      gap: 6px;
+    }
+    input[type="number"] {
+      width: 70px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #4b5563;
+      background: #374151;
+      color: #fff;
+      text-align: right;
+      font-weight: bold;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .btn-apply-all {
+      width: 100%;
+      margin-top: 6px;
+      background: #059669;
+      padding: 8px;
+    }
+    .btn-apply-all:hover {
+      background: #047857;
+    }
+    .info-val {
+      font-size: 20px;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+    .scene-preview {
+      font-size: 13px;
+      color: #d1d5db;
+      background: #111827;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ノベルゲーム 変数管理ツール</h1>
+
+  <!-- キャラクター別 好感度管理 -->
+  <div class="card">
+    <label>好感度パラメータ (favorability)</label>
+    
+    <div id="favor-container">
+      <!-- JSで動的にキャラごとの入力欄を生成します -->
+    </div>
+
+    <button class="btn-apply-all" onclick="setAllFavorability()">全好感度を一括変更</button>
+  </div>
+
+  <!-- シーン・進行管理 -->
+  <div class="card">
+    <label>現在のシーンID (currentSceneId)</label>
+    <div class="info-val" id="scene-id-disp">-</div>
+    
+    <label style="margin-top: 15px;">指定シーンへジャンプ (テスト用)</label>
+    <div class="input-group">
+      <input type="number" id="jump-scene-input" value="0" placeholder="ID">
+      <button onclick="jumpToScene()">ジャンプ</button>
+    </div>
+
+    <label style="margin-top: 12px;">現在のテキスト</label>
+    <div class="scene-preview">
+      <b id="speaker-disp" style="color: #ffd166;"></b><br>
+      <span id="text-disp">---</span>
+    </div>
+  </div>
+
+  <script>
+    const channel = new BroadcastChannel('novel_game_debug');
+
+    // 表示名マッピング（ゲーム側と同じものを用意）
+    const FAVOR_NAME_MAP = {
+      charaA: "ほのか",
+      charaB: "裕也",
+      charaC: "三月"
+    };
+
+    // 初期状態の取得要求
+    channel.postMessage({ type: 'REQUEST_INITIAL_STATE' });
+
+    // ゲームからの通知を受信してUIを更新
+    channel.onmessage = (event) => {
+      const data = event.data;
+      if (data.type === 'STATE_UPDATE') {
+        renderFavorInputs(data.favorability);
+        document.getElementById('scene-id-disp').textContent = data.currentSceneId;
+        document.getElementById('speaker-disp').textContent = data.currentSpeaker ? `【${data.currentSpeaker}】` : '（話者なし）';
+        document.getElementById('text-disp').textContent = data.currentText || '';
+      }
+    };
+
+    // キャラごとの入力UIを動的に生成・更新
+    function renderFavorInputs(favorability) {
+      const container = document.getElementById('favor-container');
+      
+      // オブジェクトでない場合のフォールバック
+      if (typeof favorability !== "object" || favorability === null) {
+        favorability = { charaA: Number(favorability) || 0, charaB: 0, charaC: 0 };
+      }
+
+      // 既存の入力欄があれば値を更新、なければ作成
+      for (const [key, val] of Object.entries(favorability)) {
+        let row = document.getElementById(`favor-row-${key}`);
+        const displayName = FAVOR_NAME_MAP[key] || key;
+
+        if (!row) {
+          row = document.createElement('div');
+          row.id = `favor-row-${key}`;
+          row.className = 'chara-row';
+          row.innerHTML = `
+            <div class="chara-info">
+              <span class="chara-name">${displayName}</span>
+              <span class="chara-key">${key}</span>
+            </div>
+            <div class="input-group">
+              <input type="number" id="favor-input-${key}" value="${val}">
+              <button onclick="setSingleFavorability('${key}')">反映</button>
+            </div>
+          `;
+          container.appendChild(row);
+        } else {
+          // フォーカス中（入力中）でなければ値を最新にする
+          const input = document.getElementById(`favor-input-${key}`);
+          if (document.activeElement !== input) {
+            input.value = val;
+          }
+        }
+      }
+    }
+
+    // 特定のキャラクター1人の好感度を変更
+    function setSingleFavorability(targetKey) {
+      const val = document.getElementById(`favor-input-${targetKey}`).value;
+      channel.postMessage({
+        type: 'SET_FAVORABILITY',
+        target: targetKey,
+        value: Number(val)
+      });
+    }
+
+    // 全キャラクターの好感度を一括変更
+    function setAllFavorability() {
+      const updatedFavor = {};
+      const inputs = document.querySelectorAll('[id^="favor-input-"]');
+      
+      inputs.forEach(input => {
+        const key = input.id.replace('favor-input-', '');
+        updatedFavor[key] = Number(input.value);
+      });
+
+      channel.postMessage({
+        type: 'SET_FAVORABILITY',
+        value: updatedFavor
+      });
+    }
+
+    // 指定シーンへ直接ジャンプ
+    function jumpToScene() {
+      const val = document.getElementById('jump-scene-input').value;
+      channel.postMessage({ type: 'JUMP_SCENE', value: val });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ノベルゲーム制作ツール - 使い方マニュアル</title>
+  <style>
+    /* 明るく親しみやすいカラーパレットの設定 */
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-color: #0284c7;
+      --accent-light: #e0f2fe;
+      --accent-hover: #0369a1;
+      --code-bg: #f1f5f9;
+      --code-color: #0d9488;
+      --border-color: #e2e8f0;
+      --warning-bg: #fffbebf5;
+      --warning-border: #fde68a;
+      --warning-text: #b45309;
+    }
+
+    /* ページ内リンクのスムーススクロール */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", MeiRyo, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.75;
+      padding-bottom: 60px;
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ヘッダー */
+    header {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 40px 20px 30px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 28px;
+      color: #0369a1;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    /* ダウンロード・アクションボタンエリア */
+    .download-container {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff !important;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 14px 36px;
+      border-radius: 30px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+      transition: all 0.25s ease;
+      text-decoration: none !important;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    }
+
+    .download-btn svg, .copy-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #0369a1 !important;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 14px 36px;
+      border-radius: 30px;
+      border: 2px solid #0284c7;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+      transition: all 0.25s ease;
+      text-decoration: none !important;
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      background: var(--accent-light);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.25);
+    }
+
+    /* コンテナ */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* セクション共通 */
+    section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 30px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #0284c7;
+      border-bottom: 2px solid var(--accent-light);
+      padding-bottom: 8px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: #334155;
+      margin: 22px 0 12px 0;
+    }
+
+    h4 {
+      font-size: 15px;
+      color: #0369a1;
+      margin: 18px 0 8px 0;
+    }
+
+    p, ul, ol {
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* 目次（Table of Contents）スタイル */
+    .toc-card {
+      background-color: #ffffff;
+      border: 2px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 30px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+    }
+
+    .toc-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0369a1;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding-left: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 10px 20px;
+    }
+
+    .toc-list li {
+      margin-bottom: 0;
+    }
+
+    .toc-list a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      color: #334155;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .toc-list a:hover {
+      background-color: var(--accent-light);
+      color: #0369a1;
+      text-decoration: none;
+    }
+
+    .toc-num {
+      background-color: #0284c7;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: bold;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* 注意書き用スタイル */
+    .alert-box {
+      background-color: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      color: var(--warning-text);
+      font-size: 14px;
+    }
+
+    .alert-box h4 {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: var(--warning-text);
+    }
+
+    /* コード表示ブロック & コピーボタン用ラッパー */
+    .code-block-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    pre, code {
+      font-family: "Consolas", "Courier New", monospace;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      padding-top: 40px; /* コピーボタンとの被り防止 */
+      overflow-x: auto;
+      font-size: 14px;
+      color: #334155;
+      margin-bottom: 0;
+    }
+
+    code {
+      background-color: var(--code-bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: var(--code-color);
+      font-size: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      border: none;
+      color: inherit;
+    }
+
+    /* コードブロック右上のコピーボタン */
+    .code-copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: #ffffff;
+      color: #0284c7;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .code-copy-btn:hover {
+      background-color: var(--accent-light);
+      border-color: #0284c7;
+    }
+
+    .code-copy-btn.copied {
+      background-color: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
+    }
+
+    /* 画像配置用ダミースペース */
+    .image-placeholder {
+      width: 100%;
+      height: 240px;
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #64748b;
+      font-size: 14px;
+      margin: 18px 0 22px 0;
+      font-weight: 500;
+    }
+
+    /* キャラクター（ほのか）のチャット風ワンポイント解説用スタイル */
+    .chara-commentary {
+      margin: 30px 0 10px 0;
+      padding: 24px;
+      background-color: #f0fdfa;
+      border: 2px dashed #99f6e4;
+      border-radius: 12px;
+    }
+
+    .chara-commentary-title {
+      font-weight: bold;
+      color: #0f766e;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .chat-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      gap: 16px;
+    }
+
+    .chat-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .chat-avatar {
+      flex-shrink: 0;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: #ccfbf1;
+      border: 2px solid #5eead4;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .chat-bubble {
+      position: relative;
+      background-color: #ffffff;
+      border: 1px solid #ccfbf1;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      color: #334155;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      width: 100%;
+      line-height: 1.6;
+    }
+
+    .chat-bubble::before {
+      content: "";
+      position: absolute;
+      top: 22px;
+      left: -6px;
+      width: 10px;
+      height: 10px;
+      background-color: #ffffff;
+      border-left: 1px solid #ccfbf1;
+      border-bottom: 1px solid #ccfbf1;
+      transform: rotate(45deg);
+    }
+
+    /* スマホ画面向けの文字・解説エリアレスポンシブスタイル調整 */
+    @media (max-width: 600px) {
+      .chat-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .chat-avatar {
+        align-self: center;
+      }
+
+      .chat-bubble::before {
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%) rotate(135deg);
+      }
+    }
+
+    /* テーブルデザイン */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px; /* テーブルが崩れない最小横幅 */
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0369a1;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    td {
+      background-color: #ffffff;
+    }
+
+    /* ポイントバッジ */
+    .badge {
+      background-color: var(--accent-light);
+      color: #0369a1;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* トップへ戻るボタン */
+    .back-to-top {
+      text-align: right;
+      margin-top: 15px;
+    }
+
+    .back-to-top a {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 40px 20px 0 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body id="top">
+
+  <header>
+    <h1>Webノベルゲーム制作ツール</h1>
+    <p>テキストファイルを編集するだけで自分だけのノベルゲームが作れる！取扱説明書 & シナリオ記述マニュアル</p>
+    
+    <div class="download-container">
+      <a href="novel_game_tool.zip" class="download-btn" download>
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ツールをダウンロード（ZIP）
+      </a>
+      <a href="copy.html" class="copy-btn">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        コードをコピーする
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="toc-card">
+      <div class="toc-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        目次
+      </div>
+      <ul class="toc-list">
+        <li><a href="#sec1"><span class="toc-num">1</span>ツールの特徴・構成</a></li>
+        <li><a href="#sec2"><span class="toc-num">2</span>制作・動作確認</a></li>
+        <li><a href="#sec3"><span class="toc-num">3</span>シナリオの書き方ルール</a></li>
+        <li><a href="#sec4"><span class="toc-num">4</span>演出コマンド一覧</a></li>
+        <li><a href="#sec5"><span class="toc-num">5</span>プレイヤー機能（システム）</a></li>
+        <li><a href="#sec6"><span class="toc-num">6</span>ゲーム本体のカスタマイズ</a></li>
+        <li><a href="#sec7"><span class="toc-num">7</span>【応用編】UIカラー変更</a></li>
+        <li><a href="#sec8"><span class="toc-num">8</span>ツールを公開・配布する</a></li>
+      </ul>
+    </div>
+
+    <section id="sec1">
+      <h2>1. ツールの特徴・構成</h2>
+      <p>本ツールは、プログラミングの知識がなくてもノベルゲームを作成できるゲームエンジンです。</p>
+      <p>最低限の機能を備えたシンプルで軽量なツールとなっており、手軽にノベルゲームを制作できます。</p>
+
+      <div class="alert-box">
+        <h4>※ 無料サーバーご利用時の注意点</h4>
+        <p>広告が自動挿入されるタイプの無料サーバーをご利用の場合、サーバー側が挿入する広告コードの影響でプレビューやゲーム画面のレイアウトが意図通りに表示されない場合があります。</p>
+        <p>動作確認・運用の際は、広告非表示のサーバーや、エディタ（VS Code や PhoenixCode）のローカルプレビュー機能のご利用を推奨いたします。</p>
+      </div>
+
+      <div class="image-placeholder">
+        【サンプル画像スペース 1：完成ゲーム画面のキャプチャ】
+      </div>
+
+      <h3>収録ファイルとフォルダ構成</h3>
+      <ul>
+        <li><code>index.html</code> : ゲームのシステム本体（プレイヤーが遊ぶ画面）</li>
+        <li><code>editor.html</code> : プレビュー付きシナリオエディタ（制作・編集用）</li>
+        <li><code>scenario.txt</code> : ゲームのシナリオファイル（テキスト編集で作品を作ります）</li>
+        <li><code>Readme.txt</code> : 説明書ファイル</li>
+      </ul>
+      
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec2">
+      <h2>2. 制作・動作確認</h2>
+      <p>本ツールには、ブラウザ上でシナリオを作成できる「専用エディタ」が付属しています。<br>「editor.html」をブラウザ（Chrome, Edge, Safari等）で開いてご使用ください。</p>
+
+      <div class="alert-box">
+        <h4>【エディタ起動時の注意点】</h4>
+        <p>専用エディタを使用する際は VS Code や PhoenixCode のプレビュー機能から開くか、サーバーにアップロードしてご利用ください。ファイルを直接ダブルクリックして開くとローカルファイルのセキュリティ制限（CORS制限）を受けるため正しく動作しません。</p>
+      </div>
+
+      <div class="image-placeholder">
+        【サンプル画像スペース 2：editor.html の二分割画面キャプチャ】
+      </div>
+
+      <h3>エディタの特長・機能</h3>
+      <ul>
+        <li><span class="badge">画面上部（ツールバー）</span> ボタンをクリックすることで、コマンド名やよく使う値をワンタップで入力できます。</li>
+        <li><span class="badge">画面左側（テキストエディタ）</span> 構文強調（シンタックスハイライト）機能付きです。@コマンド、話者名（名前:）、コメント行などが自動で色分け表示されます。</li>
+        <li><span class="badge">画面右側（プレビュー画面）</span> 「プレビュー再生」をクリックすると、右側のゲーム画面にプレビューが表示されます。実際にゲームを動かしながら演出やセリフのテンポを確認できます。</li>
+        <li><span class="badge">ファイルを開く</span> すでに作成したシナリオファイル（scenario.txt）を読み込んで再編集できます。</li>
+        <li><span class="badge">scenario.txt を保存</span> 編集が完了したら、このボタンを押すだけでゲームにそのまま読み込める「scenario.txt」がダウンロード保存されます。</li>
+      </ul>
+
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec3">
+      <h2>3. シナリオファイル（scenario.txt）の書き方ルール</h2>
+      <p>scenario.txt には「会話文」と「演出用コマンド（@から始まる行）」を記述します。</p>
+
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>@bg: images/bg01.webp
+@bgm: sound/sound01.mp3
+@character: images/honoka.webp|pos:center
+ほのか:こんにちは！『ノベルゲーム制作ツール』へようこそ！
+
+目が覚めると、見知らぬ部屋にいた……。
+# ここはコメント行です（ゲーム内には表示されません）</code></pre>
+      </div>
+
+      <h3>基本のルール</h3>
+      <ul>
+        <li><b>話者名とセリフ</b>：話者名とセリフはコロン「<code>:</code>」で区切ります。（例：<code>ほのか:こんにちは！</code>）</li>
+        <li><b>地の文</b>：「<code>:</code>」がない行は、話者名なしの「地の文（ト書き）」になります。（例：<code>目が覚めると、見知らぬ部屋にいた……。</code>）</li>
+        <li><b>演出コマンド</b>：「<code>@</code>」から始まる行は、背景変更やBGM再生などのシステム命令です。</li>
+        <li><b>指定の継続</b>：指定（@bg や @character など）を省略した行は、直前の状態がそのまま維持されます。</li>
+        <li><b>コメント行</b>：「<code>#</code>」または「<code>//</code>」で始まる行はコメント（メモ書き）となり、ゲームには表示されません。</li>
+      </ul>
+
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            このゲームのプログラムは、<strong>『@から始まるコマンド行の設定を、次に現れるテキスト行の属性としてすべて蓄積する』</strong>という仕様になってるんだ。<br>だから@から始まるコマンド行の直後にテキスト行（セリフや地の文）がないと、プログラムが混乱して反映されなくなっちゃうから気を付けてね！
+          </div>
+        </div>
+      </div>
+      
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec4">
+      <h2>4. 演出コマンド一覧</h2>
+      <p>シナリオ内で使用できる主要な演出コマンド一覧です。</p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>コマンド</th>
+              <th>記述例</th>
+              <th>説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>背景画像の変更</td>
+              <td><code>@bg: [画像パス]</code></td>
+              <td>背景画像を変更します。（例：<code>@bg: images/bg01.webp</code>）<br>※空文字「<code>@bg: </code>」にすると背景を消去（黒画面）します。</td>
+            </tr>
+            <tr>
+              <td>BGMの再生・停止</td>
+              <td><code>@bgm: [音声パス]</code></td>
+              <td>BGMを再生します。（例：<code>@bgm: sound/sound01.mp3</code>）<br>※空文字「<code>@bgm: </code>」にするとBGMを停止します。</td>
+            </tr>
+            <tr>
+              <td>立ち絵表示・位置指定</td>
+              <td><code>@character: [画像パス]|pos:[位置]</code></td>
+              <td>位置（pos）は <code>left</code>（左）、<code>center</code>（中央）、<code>right</code>（右）から指定できます（省略時は <code>center</code>）。<br>（例：<code>@character: images/honoka.webp|pos:left</code>）<br>※空文字「<code>@character: </code>」にすると立ち絵を消去（非表示）します。</td>
+            </tr>
+            <tr>
+              <td>画面フェード（暗転）</td>
+              <td><code>@fade: true</code></td>
+              <td>直後のセリフに移動する際、黒画面を介して滑らかに切り替えます。</td>
+            </tr>
+            <tr>
+              <td>移動先ラベル作成</td>
+              <td><code>@label: [ラベル名]</code></td>
+              <td>選択肢の飛び先やルート分岐先の「目印」として配置します。（例：<code>@label: happy_end</code>）</td>
+            </tr>
+            <tr>
+              <td>選択肢表示・好感度加算</td>
+              <td><code>@choice: ボタン文章|next:ラベル名|favor:キャラ名:数値 / ...</code></td>
+              <td>選択肢ボタンを表示します。「<code>/</code>」で区切ることで複数の選択肢を作れます。<br>「<code>favor:キャラ名:数値</code>」で対象キャラ（<code>charaA</code>/<code>charaB</code>/<code>charaC</code>）の好感度を加減算します。<br>（例：<code>@choice: ほのかと行く|next:route_a|favor:charaA:10 / 裕也と行く|next:route_b|favor:charaB:10</code>）</td>
+            </tr>
+            <tr>
+              <td>変数による自動分岐</td>
+              <td><code>@branch: type:[モード]|...</code></td>
+              <td>シナリオに合わせて3通りの分岐モードを使い分けられます。<br>
+              ・<b>個別判定</b>: <code>type:single|chara:charaA|border:10|target:happy_end|else:normal_end</code>（指定キャラの数値判定）<br>
+              ・<b>最多判定</b>: <code>type:max|else:normal_end</code>（一番数値が高いキャラのエンディングへ自動分岐）<br>
+              ・<b>複合判定</b>: <code>type:multi|cond:charaA>=10,charaC>=10|target:true_end|else:normal_end</code>（複数条件判定）</td>
+            </tr>
+            <tr>
+              <td>スタッフロール開始</td>
+              <td><code>@startCredits: true</code></td>
+              <td>スタッフロールを開始します。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            最初から長編は作ろうとせず、まずは「会話シーン」だけ作ってみて、それから「選択肢による分岐」も入れてみて、更に「変数によるイベント分岐」も入れてみて…と徐々に制作に慣れていくのがおすすめだよ！
+          </div>
+        </div>
+      </div>
+      
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec5">
+      <h2>5. プレイヤーが使えるシステム機能</h2>
+      <p>ゲームのプレイ中、画面右上（スマホは上部）のメニューから以下の機能が使えます。</p>
+
+      <div class="image-placeholder">
+        【サンプル画像スペース 3：ゲーム内システムメニューやバックログ画面のキャプチャ】
+      </div>
+
+      <ul>
+        <li><b>AUTO</b> : 文章を自動で読み進めます。（AキーでもON/OFF可能）</li>
+        <li><b>SKIP</b> : 一度読んだシーン（既読文章）のみを高速で飛ばします。（SキーでもON/OFF可能）</li>
+        <li><b>LOG</b> : これまでの会話履歴（バックログ）を確認します。画面の上スワイプや上ホイールでも開けます。</li>
+        <li><b>SAVE</b> : 最大3つのスロットにゲームの進行状況を保存します。</li>
+        <li><b>LOAD</b> : セーブしたデータを読み込んで再開します。</li>
+        <li><b>TITLE</b> : タイトル画面に戻ります。</li>
+      </ul>
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec6">
+      <h2>6. ゲーム本体（index.html）のカスタマイズ方法</h2>
+      <p>「index.html」の該当部分を直接書き換えることで、タイトル画面や演出、システム音を変更できます。</p>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            「index.html」は「scenario.txt」とは違って独自タグは使用していないから、<strong>専用エディタよりも「VS Code」や「Phoenix Code」のようなコードエディタのほうが編集しやすいよ！</strong>編集したいタグを探すときはこういったエディタに備わっている「検索機能」を活用しよう！
+          </div>
+        </div>
+      </div>
+
+      <h3>タイトル画面の文字を変更する</h3>
+      <p>「index.html」内の「タイトル画面」にある以下の部分を書き換えてください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>&lt;!-- タイトル画面 --&gt;
+&lt;div id="title-screen"&gt;
+  &lt;h1&gt;ノベルゲームタイトル&lt;/h1&gt;
+  &lt;button id="start-btn" class="menu-btn"&gt;NEW GAME&lt;/button&gt;
+  &lt;button id="title-load-btn" class="menu-btn"&gt;LOAD GAME&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+      </div>
+
+      <h3>タイトル画面の背景を変更する</h3>
+      <p>「index.html」内の「タイトル画面レイヤー」にある以下の部分を書き換えてください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>/* タイトル画面レイヤー */
+#title-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('images/bg01.webp'); /* ←ここを変更してください */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
+}</code></pre>
+      </div>
+
+      <h3>スタッフロールの編集</h3>
+      <p>「index.html」内の「スタッフロールデータ」にある以下の部分を書き換えてください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>img: "images/bg01.webp",
+roles: [
+  { role: "制作・シナリオ", name: "okojo" },
+]</code></pre>
+      </div>
+
+      <h3>各種システム音の設定</h3>
+      <p>タイトル画面のBGMやシステム音を編集するときは、「index.html」内の「共通定数設定」から以下の部分を書き換えてください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>// 共通定数設定
+const TITLE_BGM_URL = "sound/sound01.mp3";
+const ENDING_BGM_URL = "sound/ending.mp3";
+const SOUND_EFFECTS = {
+  click: "sound/click.mp3",
+  type: "sound/type.mp3",
+  select: "sound/select.mp3"
+};</code></pre>
+      </div>
+      
+      <h3>好感度(変数)を非表示にする</h3>
+      <p>画面左上に表示される好感度（変数）を非表示にしたい場合は以下の部分を削除してください。</p>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>&lt;!-- 好感度・ステータス表示（縦並びエリア） --&gt;
+&lt;div id="favor-display"&gt;&lt;/div&gt;</code></pre>
+      </div>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          変数ってなに？
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            「変数」っていうのは<strong>ゲーム内で変化する数値や文字を一時的に保存しておく「箱」</strong>のことなんだ！「好感度によるイベントの分岐」や、「プレイヤーが入力した名前をテキストに反映させる」など、いろんな部分で利用されるんだよ。更に詳しく知りたい人は<a href="favor.html">こちらのページ</a>を読んでみてね！
+          </div>
+        </div>
+      </div>
+      
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+    <section id="sec7">
+      <h2>7. 【応用編】UIのカラーデザインを変更する</h2>
+      <p>「index.html」のスタイル定義（CSS）を書き換えるだけで、ゲーム全体の配色（UIデザイン）を一括で変更できます。</p>
+
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            このゲームのUIはデフォルトだと可愛い色になってるけど、シンプルなUIやかっこいいUIを使いたいときもあるよね？<br>
+            そういうときは『index.html』の先頭近くにある<strong>『:root { ... }』</strong>の中身（カラーコード）を書き換えるだけで、ボタンやメッセージ枠の色がぜんぶ一緒に変わるんだ！
+          </div>
+        </div>
+      </div>
+
+      <h3>変更場所（index.html の先頭付近）</h3>
+      <p>「index.html」をテキストエディタで開き、以下の <code>:root</code> 部分のカラーコードをご希望の色に書き換えてください。</p>
+
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  /* ベース背景色 */
+  --bg-outer: #050a14;               /* 画面外側の背景色 */
+  --bg-game: #0d1b2a;                /* ゲーム画面・モーダル背景色 */
+  --border-game: #1b263b;            /* ゲーム画面枠線 */
+
+  /* メインテーマカラー（ボタン・アクセント） */
+  --color-primary: #ffd166;        /* ボタン背景・強調表示 */
+  --color-primary-hover: #ffeea9;  /* ボタンホバー時 */
+  --color-primary-text: #1d3557;   /* 主に黄系背景上のテキスト色 */
+
+  /* メッセージウィンドウ */
+  --msg-box-bg: rgba(255, 255, 255, 0.92); /* メッセージ枠背景 */
+  --msg-box-border: #1d3557;        /* メッセージ枠線 */
+  --msg-speaker-text: #1d3557;      /* 話者名テキスト色 */
+  --msg-body-text: #2b2d42;          /* 本文テキスト色 */
+}</code></pre>
+      </div>
+
+      <h3>カラーコードの設定例（テーマ別サンプル）</h3>
+      <p>作品の雰囲気に合わせて、以下のコードブロックを丸ごとコピーして <code>:root { ... }</code> 部分に上書き貼り付けして利用できます。</p>
+
+      <h4>1. ダーク・サイバー風（クール・SF系）</h4>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  --bg-outer: #0b0e14;
+  --bg-game: #121824;
+  --border-game: #00f0ff;
+  --color-primary: #00f0ff;
+  --color-primary-hover: #70f7ff;
+  --color-primary-text: #0b0e14;
+  --color-secondary: #1a2332;
+  --color-secondary-border: #00f0ff;
+  --color-secondary-text: #00f0ff;
+  --color-active: #ff0055;
+  --msg-box-bg: rgba(18, 24, 36, 0.92);
+  --msg-box-border: #00f0ff;
+  --msg-speaker-text: #00f0ff;
+  --msg-body-text: #ffffff;
+  --modal-bg: rgba(11, 14, 20, 0.95);
+  --modal-card-bg: #1a2332;
+  --modal-card-border: #00f0ff;
+  --modal-btn-bg: #00f0ff;
+  --modal-btn-hover: #70f7ff;
+  --text-light: #ffffff;
+}</code></pre>
+      </div>
+
+      <h4>2. モノクロ・シック風（ミステリー・シリアス・ホラー系）</h4>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  --bg-outer: #121212;
+  --bg-game: #1a1a1a;
+  --border-game: #444444;
+  --color-primary: #e0e0e0;
+  --color-primary-hover: #ffffff;
+  --color-primary-text: #121212;
+  --color-secondary: #2a2a2a;
+  --color-secondary-border: #888888;
+  --color-secondary-text: #ffffff;
+  --color-active: #880000;
+  --msg-box-bg: rgba(20, 20, 20, 0.92);
+  --msg-box-border: #666666;
+  --msg-speaker-text: #ffffff;
+  --msg-body-text: #dddddd;
+  --modal-bg: rgba(18, 18, 18, 0.95);
+  --modal-card-bg: #2a2a2a;
+  --modal-card-border: #666666;
+  --modal-btn-bg: #444444;
+  --modal-btn-hover: #666666;
+  --text-light: #ffffff;
+}</code></pre>
+      </div>
+
+      <h4>3. 和風・レトロ風（時代物・伝奇系）</h4>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  --bg-outer: #1c140d;
+  --bg-game: #2b1f14;
+  --border-game: #c89b3c;
+  --color-primary: #c89b3c;
+  --color-primary-hover: #e5b85c;
+  --color-primary-text: #1c140d;
+  --color-secondary: #f4ebd9;
+  --color-secondary-border: #8c2d19;
+  --color-secondary-text: #8c2d19;
+  --color-active: #8c2d19;
+  --msg-box-bg: rgba(244, 235, 217, 0.94);
+  --msg-box-border: #8c2d19;
+  --msg-speaker-text: #8c2d19;
+  --msg-body-text: #2b1f14;
+  --modal-bg: rgba(28, 20, 13, 0.95);
+  --modal-card-bg: #f4ebd9;
+  --modal-card-border: #c89b3c;
+  --modal-btn-bg: #8c2d19;
+  --modal-btn-hover: #a83a22;
+  --text-light: #ffffff;
+}</code></pre>
+      </div>
+
+      <h4>4. キュート・パステル風（恋愛・日常・ポップ系）</h4>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  --bg-outer: #2d1b28;
+  --bg-game: #fff0f5;
+  --border-game: #ffb6c1;
+  --color-primary: #ff69b4;
+  --color-primary-hover: #ff8da1;
+  --color-primary-text: #ffffff;
+  --color-secondary: #ffffff;
+  --color-secondary-border: #ff69b4;
+  --color-secondary-text: #ff69b4;
+  --color-active: #ff1493;
+  --msg-box-bg: rgba(255, 255, 255, 0.94);
+  --msg-box-border: #ff69b4;
+  --msg-speaker-text: #d81b60;
+  --msg-body-text: #4a2e35;
+  --modal-bg: rgba(45, 27, 40, 0.95);
+  --modal-card-bg: #ffffff;
+  --modal-card-border: #ffb6c1;
+  --modal-btn-bg: #ff69b4;
+  --modal-btn-hover: #ff8da1;
+  --text-light: #ffffff;
+}</code></pre>
+      </div>
+
+      <h4>5. ゴシック・ダークホラー風（サスペンス・伝奇・ダークファンタジー系）</h4>
+      <div class="code-block-wrapper">
+        <button class="code-copy-btn">コピー</button>
+        <pre><code>:root {
+  --bg-outer: #0a0002;
+  --bg-game: #140307;
+  --border-game: #800000;
+  --color-primary: #a30000;
+  --color-primary-hover: #cc0000;
+  --color-primary-text: #ffffff;
+  --color-secondary: #1a050a;
+  --color-secondary-border: #800000;
+  --color-secondary-text: #e6b8b8;
+  --color-active: #ff0000;
+  --msg-box-bg: rgba(20, 5, 8, 0.92);
+  --msg-box-border: #800000;
+  --msg-speaker-text: #ff4d4d;
+  --msg-body-text: #e6b8b8;
+  --modal-bg: rgba(10, 0, 2, 0.96);
+  --modal-card-bg: #1a050a;
+  --modal-card-border: #800000;
+  --modal-btn-bg: #800000;
+  --modal-btn-hover: #a30000;
+  --text-light: #ffffff;
+}</code></pre>
+      </div>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            CSSの知識がある人は、UIのCSSを自分で編集して独自のデザインにして使用してもオッケーだよ！
+          </div>
+        </div>
+      </div>
+      
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+    
+    <section id="sec8">
+      <h2>8. ツールを公開・配布する</h2>
+      
+      <h3>作品を公開・配布する場合（プレイヤー環境）</h3>
+      <p>「index.html」と「scenario.txt」（および使用する画像・音声素材）をWebサーバーにアップロードすれば、スマホやPCのブラウザで誰でも遊べる状態で公開できます。</p>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          ほのかのワンポイントアドバイス！
+        </div>
+        
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/honoka.webp" alt="ほのか">
+          </div>
+          <div class="chat-bubble">
+            「もっと演出をこだわりたい！」「もっと複雑なゲームを作りたい！」と感じたら、「ティラノビルダー」や「RPGツクール」などの高性能なゲーム制作エンジンを使ってみるのもいいと思うよ！
+          </div>
+        </div>
+      </div>
+
+      <h3>ライセンス・利用規約</h3>
+      <ul>
+        <li>本ツールで制作したゲームは、個人サイトで公開したり、SNSで紹介するなど、個人的な用途において自由にご利用できます。</li>
+        <li>クレジット表記（作者名の記載）は任意ですが、していただけると大変励みになります！</li>
+        
+      </ul>
+      <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p style="margin-top: 8px;">&copy; ノベルゲーム制作ツール All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // コードコピー機能
+    document.querySelectorAll('.code-copy-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const wrapper = button.closest('.code-block-wrapper');
+        const codeText = wrapper.querySelector('code').innerText;
+
+        navigator.clipboard.writeText(codeText).then(() => {
+          button.textContent = 'コピー完了！';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            button.textContent = 'コピー';
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('コピー失敗:', err);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

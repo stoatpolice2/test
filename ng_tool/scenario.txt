@@ -1,0 +1,60 @@
+@bg: images/bg01.webp
+@bgm: sound/sound01.mp3
+@character: images/honoka.webp|pos:center
+ほのか:こんにちは！『ノベルゲーム制作ツール』へようこそ！
+
+ほのか:このツールでは、プログラミングができなくてもノベルゲームが作れちゃうんだよ。
+
+ほのか:これから私と一緒に、このツールで「どんなことができるか」を体験してみよう！
+
+@choice: ぜひ教えて！|next:explain1|favor:10 / 簡単にできるの？|next:explain1|favor:0
+ほのか:心の準備はいいかな？
+
+@label: explain1
+ほのか:まずは <color:green>【画面演出と立ち絵の位置移動】</color> から紹介するね！
+
+@character: images/honoka.webp|pos:left
+ほのか:こんなふうに『|pos:left』と書くと立ち絵を左側に表示できるよ。
+
+@character: images/honoka.webp|pos:right
+ほのか:そして『|pos:right』と書けば右側にも移動できちゃうんだ！
+
+@character: images/honoka.webp|pos:center
+@bg: images/bg02.webp
+@bgm: sound/sound02.mp3
+ほのか:背景（@bg）やBGM（@bgm）を変えるだけで、一気に場面転換の雰囲気を変えられるよ。
+
+ほのか:次は【快適なシステム機能】の紹介だよ！画面右上のボタンを見てみてね。
+
+ほのか:『AUTO』で文章を自動進行、『SKIP』で一度読んだ文章（既読）だけを高速スキップできるんだ。
+
+ほのか:『LOG』を押すか上ホイール・上スワイプをすると、いつでもバックログ（既読履歴）を確認できるよ。
+
+ほのか:もちろん『SAVE/LOAD』で最大3つのスロットにゲームデータを保存・読み込みもできるから安心だね！
+
+@choice: 一緒に冒険に出かける！|next:branch_check|favor:10 / ここで少し休憩する|next:branch_check|favor:-10
+ほのか:それじゃあ最後に……【選択肢とルート分岐】を試してみようか！
+
+@label: branch_check
+システム:（ここまでの選択肢の「好感度（favor）」によってエンディングが分岐します……）
+@fade: true
+@branch: true|happy:happy_end|normal:normal_end
+
+@label: branch_check
+@fade: true
+@branch: true|happy:happy_end|normal:normal_end
+システム:（ここまでの選択肢の「好感度（favor）」によってエンディングが分岐します……）
+
+@label: happy_end
+ほのか:こんな風にプレイヤーの選択によって物語が変わるマルチエンディングも簡単に作れちゃうんだ。
+
+@startCredits: true
+ほのか:これでチュートリアルは終わりだよ！君だけの素敵な物語を作って公開してみてね！
+
+@label: normal_end
+@bg: images/bg02.webp
+@character: images/honoka.webp|pos:center
+ほのか:ふふっ、今回は「NORMAL END」に到達したみたい。選択肢次第で違う展開が楽しめるんだよ。
+
+@startCredits: true
+ほのか:それじゃあ、scenario.txt を自由に書き換えて、君だけのオリジナル作品を作ってみてね！ばいばい！
