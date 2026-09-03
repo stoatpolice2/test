@@ -1,0 +1,2686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ソースコードコピー - ノベルゲーム制作ツール</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-color: #0284c7;
+      --accent-light: #e0f2fe;
+      --accent-hover: #0369a1;
+      --code-bg: #0f172a;
+      --code-color: #e2e8f0;
+      --border-color: #cbd5e1;
+      --success-color: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", MeiRyo, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* ヘッダー */
+    header {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      border-bottom: 1px solid #bae6fd;
+      padding: 40px 20px 30px;
+      text-align: center;
+      position: relative;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-color);
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      margin-bottom: 16px;
+      padding: 6px 16px;
+      background-color: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      background-color: var(--accent-light);
+      transform: translateX(-3px);
+    }
+
+    header h1 {
+      font-size: 26px;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* メインコンテナ */
+    .container {
+      max-width: 960px;
+      margin: 30px auto 0;
+      padding: 0 20px;
+    }
+
+    /* ガイドボックス */
+    .guide-box {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--accent-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #334155;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .guide-box ol {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+
+    .guide-box li {
+      margin-bottom: 4px;
+    }
+
+    /* タブ切り替えUI */
+    .tab-container {
+      background-color: var(--card-bg);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .tab-buttons {
+      display: flex;
+      background-color: #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 16px 12px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .tab-btn:hover {
+      color: var(--accent-color);
+      background-color: #e2e8f0;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-color);
+      background-color: #ffffff;
+      border-bottom-color: var(--accent-color);
+    }
+
+    /* コードコンテンツエリア */
+    .tab-content {
+      display: none;
+      padding: 24px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .file-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .file-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .file-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0369a1;
+      font-family: "Consolas", monospace;
+    }
+
+    .file-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* コピーボタン */
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(2, 132, 199, 0.4);
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    }
+
+    .copy-btn.copied {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+    }
+
+    .copy-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* コード表示用領域 */
+    .code-wrapper {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-color);
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 20px;
+      max-height: 500px;
+      overflow: auto;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    /* トースト通知 */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    #toast .toast-icon {
+      color: var(--success-color);
+    }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 40px 20px 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="manual.html" class="back-link">
+      ‹ マニュアルページに戻る
+    </a>
+    <h1>ソースコードコピー専用ページ</h1>
+    <p>zipファイルのダウンロードをせず、コードを直接コピーして手動で作成したい方はこちらをご利用ください。</p>
+  </header>
+
+  <div class="container">
+
+    <!-- 手順説明 -->
+    <div class="guide-box">
+      <strong>【コードから手動作成する手順】</strong>
+      <ol>
+        <li>パソコン上に新規フォルダ（例：<code>my-novel-game</code>）を作成します。</li>
+        <li>下記の各タブから「コードをコピー」ボタンを押し、指定のファイル名で保存してください。</li>
+        <li>すべてのファイルを同じフォルダ内に配置すれば、ツールのセットアップ完了です！</li>
+      </ol>
+    </div>
+
+    <!-- タブコンテンツエリア -->
+    <div class="tab-container">
+      
+      <!-- タブボタン -->
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab('index-html', this)">index.html (ゲーム本体)</button>
+        <button class="tab-btn" onclick="switchTab('editor-html', this)">editor.html (エディタ)</button>
+        <button class="tab-btn" onclick="switchTab('debug-html', this)">debug.html (デバッグツール)</button>
+        <button class="tab-btn" onclick="switchTab('scenario-txt', this)">scenario.txt (シナリオ)</button>
+      </div>
+
+      <!-- 1. index.html -->
+      <div id="index-html" class="tab-content active">
+        <div class="file-header">
+          <div class="file-info">
+            <span class="file-name">index.html</span>
+            <span class="file-desc">ゲームのシステム本体（プレイヤーがブラウザで遊ぶ画面）</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode('code-index-html', this)">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            コードをコピー
+          </button>
+        </div>
+        <div class="code-wrapper">
+          <pre><code id="code-index-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;
+  &lt;title&gt;ノベルゲーム制作ツール&lt;/title&gt;
+  &lt;style&gt;
+    :root {
+      --bg-outer: #050a14;
+      --bg-game: #0d1b2a;
+      --border-game: #1b263b;
+      --color-primary: #ffd166;
+      --color-primary-hover: #ffeea9;
+      --color-primary-text: #1d3557;
+      --color-secondary: #ffffff;
+      --color-secondary-border: #1d3557;
+      --color-secondary-text: #1d3557;
+      --color-active: #e63946;
+      --msg-box-bg: rgba(255, 255, 255, 0.92);
+      --msg-box-border: #1d3557;
+      --msg-speaker-text: #1d3557;
+      --msg-body-text: #2b2d42;
+      --modal-bg: rgba(13, 27, 42, 0.95);
+      --modal-card-bg: #ffffff;
+      --modal-card-border: #457b9d;
+      --modal-btn-bg: #457b9d;
+      --modal-btn-hover: #1d3557;
+      --text-light: #ffffff;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-outer);
+      overflow: hidden;
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", MeiRyo, sans-serif;
+    }
+
+    #game-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+
+    #game-container {
+      width: 800px;
+      height: 450px;
+      position: absolute;
+      background-color: var(--bg-game);
+      background-size: cover;
+      background-position: center;
+      color: #333;
+      overflow: hidden;
+      border: 4px solid var(--border-game);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      transform-origin: center center;
+      box-sizing: border-box;
+    }
+
+    #fade-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-game);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 50;
+    }
+
+    #fade-overlay.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #title-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('images/bg01.webp');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    #title-screen::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(13, 27, 42, 0.55);
+      z-index: -1;
+    }
+
+    #title-screen h1 {
+      font-size: 38px;
+      margin-bottom: 20px;
+      color: var(--text-light);
+      letter-spacing: 2px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .menu-btn {
+      padding: 12px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: var(--color-primary);
+      color: var(--color-primary-text);
+      border: 3px solid var(--text-light);
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease;
+      width: 200px;
+    }
+
+    .menu-btn:hover {
+      background-color: var(--color-primary-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    #system-menu {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: none;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .sys-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      background: var(--color-secondary);
+      color: var(--color-secondary-text);
+      border: 2px solid var(--color-secondary-border);
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .sys-btn:hover {
+      background: var(--color-primary);
+      transform: translateY(-2px);
+    }
+
+    .sys-btn.is-active {
+      background: var(--color-active);
+      color: var(--text-light);
+      border-color: var(--text-light);
+      box-shadow: 0 0 8px rgba(230, 57, 70, 0.8);
+    }
+
+    #favor-display {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      background: var(--color-primary);
+      color: var(--color-primary-text);
+      border: 2px solid var(--text-light);
+      border-radius: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      z-index: 10;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      text-align: left;
+      min-width: 90px;
+    }
+
+    .favor-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    #log-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-bg);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 200;
+    }
+
+    #log-modal h2 {
+      margin: 0 0 15px 0;
+      color: var(--color-primary);
+      font-size: 22px;
+    }
+
+    #log-container {
+      width: 90%;
+      height: 300px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid var(--modal-card-border);
+      border-radius: 8px;
+      padding: 15px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .log-item {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+      padding-bottom: 8px;
+      text-align: left;
+    }
+
+    .log-speaker {
+      font-weight: bold;
+      color: var(--color-primary);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .log-text {
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    #staff-credits {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-game);
+      display: none;
+      z-index: 80;
+    }
+
+    #credits-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    #credits-image-area {
+      width: 50%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: width 0.5s ease;
+    }
+
+    #credits-text-area {
+      width: 50%;
+      height: 100%;
+      background-color: var(--modal-bg);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .credits-role {
+      font-size: 14px;
+      color: var(--color-primary);
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .credits-name {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    #thanks-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 42px;
+      font-weight: bold;
+      color: var(--text-light);
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 209, 102, 0.8);
+      display: none;
+      z-index: 90;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    #save-modal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-bg);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+
+    #save-modal h2 {
+      margin-bottom: 20px;
+      color: var(--color-primary);
+      font-size: 24px;
+    }
+
+    .slot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .slot-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--modal-card-bg);
+      color: var(--color-secondary-text);
+      border: 2px solid var(--modal-card-border);
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .slot-item:hover {
+      background: #e0f4ff;
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+    }
+
+    .slot-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .slot-title {
+      font-weight: bold;
+      color: var(--color-secondary-text);
+    }
+
+    .slot-preview {
+      font-size: 12px;
+      color: var(--modal-card-border);
+    }
+
+    .slot-date {
+      font-size: 10px;
+      color: #6c757d;
+    }
+
+    .modal-close-btn {
+      margin-top: 20px;
+      padding: 8px 24px;
+      background: var(--modal-btn-bg);
+      color: var(--text-light);
+      font-weight: bold;
+      border: none;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: var(--modal-btn-hover);
+    }
+
+    #character-image {
+      position: absolute;
+      bottom: 0;
+      max-height: 380px;
+      z-index: 1;
+      display: none;
+      transition: left 0.3s ease, transform 0.3s ease;
+    }
+
+    #message-box {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      height: 105px;
+      background: var(--msg-box-bg);
+      border: 3px solid var(--msg-box-border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      cursor: pointer;
+      box-sizing: border-box;
+      z-index: 2;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    #speaker-name {
+      font-weight: bold;
+      color: var(--msg-speaker-text);
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    #message-text {
+      color: var(--msg-body-text);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    #choice-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .choice-btn {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: bold;
+      background: var(--color-primary);
+      color: var(--color-primary-text);
+      border: 2px solid var(--text-light);
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+    }
+
+    .choice-btn:hover {
+      background: var(--color-primary-hover);
+      color: var(--color-primary-text);
+      transform: scale(1.05);
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;div id="game-wrapper"&gt;
+  &lt;div id="game-container"&gt;
+    &lt;div id="fade-overlay"&gt;&lt;/div&gt;
+
+    &lt;div id="title-screen"&gt;
+      &lt;h1&gt;ノベルゲームタイトル&lt;/h1&gt;
+      &lt;button id="start-btn" class="menu-btn"&gt;NEW GAME&lt;/button&gt;
+      &lt;button id="title-load-btn" class="menu-btn"&gt;LOAD GAME&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div id="staff-credits"&gt;
+      &lt;div id="credits-container"&gt;
+        &lt;div id="credits-image-area"&gt;&lt;/div&gt;
+        &lt;div id="credits-text-area"&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div id="thanks-text"&gt;Thanks for playing!&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id="favor-display"&gt;&lt;/div&gt;
+
+    &lt;div id="system-menu"&gt;
+      &lt;button id="auto-btn" class="sys-btn"&gt;AUTO&lt;/button&gt;
+      &lt;button id="skip-btn" class="sys-btn"&gt;SKIP&lt;/button&gt;
+      &lt;button id="log-btn" class="sys-btn"&gt;LOG&lt;/button&gt;
+      &lt;button id="save-btn" class="sys-btn"&gt;SAVE&lt;/button&gt;
+      &lt;button id="load-btn" class="sys-btn"&gt;LOAD&lt;/button&gt;
+      &lt;button id="to-title-btn" class="sys-btn"&gt;TITLE&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div id="log-modal"&gt;
+      &lt;h2&gt;BACKLOG&lt;/h2&gt;
+      &lt;div id="log-container"&gt;&lt;/div&gt;
+      &lt;button id="log-close-btn" class="modal-close-btn"&gt;閉じる&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div id="save-modal"&gt;
+      &lt;h2 id="modal-title"&gt;SAVE DATA&lt;/h2&gt;
+      &lt;div class="slot-list"&gt;
+        &lt;div class="slot-item" data-slot="1"&gt;
+          &lt;div class="slot-info"&gt;
+            &lt;div class="slot-title"&gt;SLOT 1&lt;/div&gt;
+            &lt;div class="slot-preview" id="slot-preview-1"&gt;-- NO DATA --&lt;/div&gt;
+            &lt;div class="slot-date" id="slot-date-1"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="slot-item" data-slot="2"&gt;
+          &lt;div class="slot-info"&gt;
+            &lt;div class="slot-title"&gt;SLOT 2&lt;/div&gt;
+            &lt;div class="slot-preview" id="slot-preview-2"&gt;-- NO DATA --&lt;/div&gt;
+            &lt;div class="slot-date" id="slot-date-2"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="slot-item" data-slot="3"&gt;
+          &lt;div class="slot-info"&gt;
+            &lt;div class="slot-title"&gt;SLOT 3&lt;/div&gt;
+            &lt;div class="slot-preview" id="slot-preview-3"&gt;-- NO DATA --&lt;/div&gt;
+            &lt;div class="slot-date" id="slot-date-3"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button id="modal-close-btn" class="modal-close-btn"&gt;閉じる&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;img id="character-image" src="" alt="キャラクター"&gt;
+    
+    &lt;div id="choice-container"&gt;&lt;/div&gt;
+
+    &lt;div id="message-box"&gt;
+      &lt;div id="speaker-name"&gt;&lt;/div&gt;
+      &lt;div id="message-text"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  function resizeGame() {
+    const container = document.getElementById("game-container");
+    const baseWidth = 800;
+    const baseHeight = 450;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const scaleX = windowWidth / baseWidth;
+    const scaleY = windowHeight / baseHeight;
+    const scale = Math.min(scaleX, scaleY) * 0.96;
+    container.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener("resize", resizeGame);
+  window.addEventListener("orientationchange", resizeGame);
+
+  const TITLE_BGM_URL = "sound/sound01.mp3";
+  const ENDING_BGM_URL = "sound/sound01.mp3";
+  const SOUND_EFFECTS = {
+    click: "sound/click.mp3",
+    type: "sound/type.mp3",
+    select: "sound/select.mp3"
+  };
+
+  const FAVOR_NAME_MAP = {
+    charaA: "ほのか",
+    charaB: "裕也",
+    charaC: "三月"
+  };
+
+  const creditsData = [
+    {
+      img: "images/bg01.webp",
+      roles: [
+        { role: "制作・シナリオ", name: "okojo" },
+      ]
+    },
+    {
+      img: "images/bg02.webp",
+      roles: [
+        { role: "イラスト", name: "ゴリラの素材屋さん" },
+      ]
+    },
+    {
+      img: "images/bg03.webp",
+      roles: [
+        { role: "音楽・BGM", name: "こばっと / POLARIS PLUS" },
+      ]
+    },
+    {
+      img: "images/bg04.webp",
+      roles: [
+        { role: "効果音（SE）", name: "魔王魂" },
+      ]
+    },
+    {
+      img: "images/bg05.webp",
+      roles: [
+        { role: "スペシャルサンクス", name: "Gemini" },
+      ]
+    },
+    {
+      img: "images/bg01.webp",
+      isFinal: true
+    }
+  ];
+
+  let scenario = [];
+  let labelMap = {};
+  let favorability = createInitialFavorability();
+  let currentSceneId = 0;
+  let typeTimer = null;
+  let autoTimer = null;
+  let creditsTimer = null;
+  let isTyping = false;
+  let isFading = false;
+  let fullText = "";
+  const typingSpeed = 50;
+  const fadeDuration = 500;
+
+  let isAutoMode = false;
+  let isSkipMode = false;
+  const autoDelay = 1500;
+  const skipDelay = 100;
+
+  let readSceneIds = new Set();
+  let backlog = [];
+  let currentCreditIndex = 0;
+  let isCreditsActive = false;
+  let isFinalCreditScreen = false;
+  let currentModalMode = "save";
+
+  const bgmAudio = new Audio();
+  bgmAudio.loop = true;
+  bgmAudio.volume = 0.3;
+  let currentBgmSrc = "";
+
+  function parseScenarioText(text) {
+    const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+    const parsedScenario = [];
+    labelMap = {};
+    let currentScene = {};
+    let sceneIdCounter = 0;
+
+    lines.forEach(line => {
+      line = line.trim();
+
+      if (line.startsWith("#") || line.startsWith("//")) return;
+
+      if (line.startsWith("@")) {
+        const firstColonIdx = line.indexOf(":");
+        let command = "", param = "";
+
+        if (firstColonIdx !== -1) {
+          command = line.slice(1, firstColonIdx).trim();
+          param = line.slice(firstColonIdx + 1).trim();
+        } else {
+          command = line.slice(1).trim();
+        }
+
+        const targetObj = parsedScenario.length > 0 && Object.keys(currentScene).length === 0 
+          ? parsedScenario[parsedScenario.length - 1] 
+          : currentScene;
+
+        if (command === "label") {
+          labelMap[param] = sceneIdCounter;
+          currentScene.label = param;
+        }
+        else if (command === "bg") currentScene.bg = param;
+        else if (command === "bgm") currentScene.bgm = param;
+        else if (command === "se") currentScene.se = param;
+        else if (command === "character") {
+          if (param.includes("|")) {
+            const parts = param.split("|").map(s => s.trim());
+            currentScene.character = parts[0];
+            parts.slice(1).forEach(p => {
+              if (p.startsWith("pos:")) currentScene.characterPos = p.replace("pos:", "").trim();
+            });
+          } else {
+            currentScene.character = param;
+            currentScene.characterPos = "center";
+          }
+        }
+        else if (command === "fade") currentScene.fade = (param === "true");
+        else if (command === "startCredits") currentScene.startCredits = (param === "true");
+        else if (command === "jump") targetObj.jumpTarget = param;
+        else if (command === "branch") {
+          targetObj.isBranch = true;
+          const parts = param.split("|");
+          parts.forEach(p => {
+            if (p.startsWith("type:")) targetObj.branchType = p.replace("type:", "").trim();
+            if (p.startsWith("chara:")) targetObj.branchChara = p.replace("chara:", "").trim();
+            if (p.startsWith("border:")) targetObj.branchBorder = parseInt(p.replace("border:", "").trim());
+            if (p.startsWith("target:")) targetObj.branchTarget = p.replace("target:", "").trim();
+            if (p.startsWith("else:")) targetObj.elseTarget = p.replace("else:", "").trim();
+            if (p.startsWith("cond:")) targetObj.branchCond = p.replace("cond:", "").trim();
+            if (p.startsWith("happy:")) targetObj.happyTarget = p.replace("happy:", "").trim();
+            if (p.startsWith("normal:")) targetObj.normalTarget = p.replace("normal:", "").trim();
+          });
+        }
+        else if (command === "choice") {
+          const choiceItems = param.split("/");
+          targetObj.choices = choiceItems.map(item => {
+            const parts = item.split("|").map(s => s.trim());
+            const text = parts[0];
+            let nextTarget = null, favorTarget = "charaA", favorChange = 0;
+
+            parts.slice(1).forEach(p => {
+              if (p.startsWith("next:")) nextTarget = p.replace("next:", "").trim();
+              if (p.startsWith("favor:")) {
+                const val = p.replace("favor:", "").trim();
+                if (val.includes(":")) {
+                  const [target, amount] = val.split(":");
+                  favorTarget = target.trim();
+                  favorChange = parseInt(amount);
+                } else {
+                  favorChange = parseInt(val);
+                }
+              }
+            });
+            return { text, nextTarget, favorTarget, favorChange };
+          });
+        }
+        return;
+      }
+
+      const speakerMatch = line.match(/^([^:@<>\n\s]+):(.*)$/);
+      if (speakerMatch) {
+        currentScene.speaker = speakerMatch[1].trim();
+        currentScene.text = speakerMatch[2].trim();
+      } else {
+        currentScene.speaker = "";
+        currentScene.text = line;
+      }
+
+      currentScene.id = sceneIdCounter;
+      currentScene.next = sceneIdCounter + 1;
+      parsedScenario.push(currentScene);
+      sceneIdCounter++;
+      currentScene = {};
+    });
+
+    parsedScenario.forEach(scene => {
+      if (scene.choices) {
+        scene.choices.forEach(choice => {
+          if (choice.nextTarget) {
+            choice.next = (labelMap[choice.nextTarget] !== undefined) ? labelMap[choice.nextTarget] : parseInt(choice.nextTarget);
+          }
+        });
+      }
+      if (scene.happyTarget && labelMap[scene.happyTarget] !== undefined) scene.happyNext = labelMap[scene.happyTarget];
+      if (scene.normalTarget && labelMap[scene.normalTarget] !== undefined) scene.normalNext = labelMap[scene.normalTarget];
+    });
+
+    return parsedScenario;
+  }
+
+  async function loadScenarioFromTxt(filePath) {
+    try {
+      const response = await fetch(filePath);
+      const text = await response.text();
+      return parseScenarioText(text);
+    } catch (error) {
+      console.error("scenario.txt の読み込みエラー:", error);
+      return [];
+    }
+  }
+
+  function createInitialFavorability() {
+    return { charaA: 0, charaB: 0, charaC: 0 };
+  }
+
+  const fadeOverlayEl = document.getElementById("fade-overlay");
+  const titleScreenEl = document.getElementById("title-screen");
+  const systemMenuEl = document.getElementById("system-menu");
+  const favorDisplayEl = document.getElementById("favor-display");
+  const startBtnEl = document.getElementById("start-btn");
+  const titleLoadBtnEl = document.getElementById("title-load-btn");
+  const saveBtnEl = document.getElementById("save-btn");
+  const loadBtnEl = document.getElementById("load-btn");
+  const toTitleBtnEl = document.getElementById("to-title-btn");
+  const saveModalEl = document.getElementById("save-modal");
+  const modalTitleEl = document.getElementById("modal-title");
+  const modalCloseBtnEl = document.getElementById("modal-close-btn");
+  const gameContainerEl = document.getElementById("game-container");
+  const characterImageEl = document.getElementById("character-image");
+  const speakerNameEl = document.getElementById("speaker-name");
+  const messageTextEl = document.getElementById("message-text");
+  const messageBoxEl = document.getElementById("message-box");
+  const choiceContainerEl = document.getElementById("choice-container");
+
+  const autoBtnEl = document.getElementById("auto-btn");
+  const skipBtnEl = document.getElementById("skip-btn");
+
+  const logBtnEl = document.getElementById("log-btn");
+  const logModalEl = document.getElementById("log-modal");
+  const logContainerEl = document.getElementById("log-container");
+  const logCloseBtnEl = document.getElementById("log-close-btn");
+
+  const staffCreditsEl = document.getElementById("staff-credits");
+  const creditsImgAreaEl = document.getElementById("credits-image-area");
+  const creditsTextAreaEl = document.getElementById("credits-text-area");
+  const thanksTextEl = document.getElementById("thanks-text");
+
+  function playSe(src, volume = 0.4) {
+    if (!src) return;
+    const se = new Audio(src);
+    se.volume = volume;
+    se.play().catch(err => console.log("SE再生エラー:", err));
+  }
+
+  function playBgm(src) {
+    if (!src) {
+      bgmAudio.pause();
+      bgmAudio.currentTime = 0;
+      currentBgmSrc = "";
+      return;
+    }
+
+    if (currentBgmSrc === src) return;
+
+    bgmAudio.pause();
+    bgmAudio.src = src;
+    bgmAudio.currentTime = 0;
+    
+    bgmAudio.play().then(() => {
+      currentBgmSrc = src;
+    }).catch(error => {
+      console.log("BGM再生エラー:", error);
+    });
+  }
+
+  function loadReadScenes() {
+    const data = localStorage.getItem("novel_game_read_scenes");
+    if (data) {
+      try {
+        readSceneIds = new Set(JSON.parse(data));
+      } catch (e) {
+        console.error("既読データの読み込みエラー", e);
+      }
+    }
+  }
+
+  function saveReadScenes() {
+    localStorage.setItem("novel_game_read_scenes", JSON.stringify(Array.from(readSceneIds)));
+  }
+
+  function markSceneAsRead(sceneId) {
+    if (!readSceneIds.has(sceneId)) {
+      readSceneIds.add(sceneId);
+      saveReadScenes();
+    }
+  }
+
+  function isSceneRead(sceneId) {
+    return readSceneIds.has(sceneId);
+  }
+
+  function updateFavorDisplay() {
+    if (typeof favorability === "object" && favorability !== null) {
+      let html = "";
+      for (const [key, val] of Object.entries(favorability)) {
+        const labelName = FAVOR_NAME_MAP[key] || key;
+        html += `&lt;div class="favor-item"&gt;&lt;span&gt;${labelName}:&lt;/span&gt;&lt;span&gt;${val}&lt;/span&gt;&lt;/div&gt;`;
+      }
+      favorDisplayEl.innerHTML = html;
+    } else {
+      favorDisplayEl.textContent = favorability;
+    }
+  }
+
+  function updateAutoSkipUI() {
+    autoBtnEl.classList.toggle("is-active", isAutoMode);
+    skipBtnEl.classList.toggle("is-active", isSkipMode);
+  }
+
+  function stopAutoSkip() {
+    isAutoMode = false;
+    isSkipMode = false;
+    clearTimeout(autoTimer);
+    updateAutoSkipUI();
+  }
+
+  function scheduleNextStep() {
+    clearTimeout(autoTimer);
+    if (choiceContainerEl.children.length &gt; 0) return;
+
+    if (isSkipMode) {
+      autoTimer = setTimeout(() => {
+        advanceStory();
+      }, skipDelay);
+    } else if (isAutoMode) {
+      autoTimer = setTimeout(() => {
+        advanceStory();
+      }, autoDelay);
+    }
+  }
+
+  function parseColorTags(str) {
+    if (!str) return "";
+    return str.replace(/&lt;color:(.*?)&gt;(.*?)&lt;\/color&gt;/g, (match, color, p2) => {
+      return `&lt;span style="color:${color.trim()};"&gt;${p2}&lt;/span&gt;`;
+    });
+  }
+
+  function typeWriter(speaker, text) {
+    clearInterval(typeTimer);
+    clearTimeout(autoTimer);
+    fullText = text;
+    messageTextEl.innerHTML = "";
+    isTyping = true;
+
+    const lastLog = backlog[backlog.length - 1];
+    if (!lastLog || lastLog.speaker !== speaker || lastLog.text !== text) {
+      backlog.push({ speaker, text });
+    }
+
+    const parsedHtml = parseColorTags(text);
+
+    if (isSkipMode) {
+      messageTextEl.innerHTML = parsedHtml;
+      isTyping = false;
+      scheduleNextStep();
+      return;
+    }
+
+    let currentHtml = "";
+    let i = 0;
+
+    typeTimer = setInterval(() => {
+      if (i &lt; parsedHtml.length) {
+        if (parsedHtml[i] === '&lt;') {
+          const closingIdx = parsedHtml.indexOf('&gt;', i);
+          if (closingIdx !== -1) {
+            currentHtml += parsedHtml.slice(i, closingIdx + 1);
+            i = closingIdx + 1;
+          } else {
+            currentHtml += parsedHtml[i];
+            i++;
+          }
+        } else {
+          currentHtml += parsedHtml[i];
+          if (parsedHtml[i].trim() !== "") {
+            playSe(SOUND_EFFECTS.type, 0.2);
+          }
+          i++;
+        }
+        messageTextEl.innerHTML = currentHtml;
+      } else {
+        clearInterval(typeTimer);
+        messageTextEl.innerHTML = parsedHtml;
+        isTyping = false;
+        scheduleNextStep();
+      }
+    }, typingSpeed);
+  }
+
+  function openLogModal() {
+    logContainerEl.innerHTML = "";
+    
+    if (backlog.length === 0) {
+      logContainerEl.innerHTML = '&lt;div style="color:#aaa; padding:20px;"&gt;履歴がありません。&lt;/div&gt;';
+    } else {
+      backlog.forEach(item => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "log-item";
+        
+        const speakerHtml = item.speaker ? `&lt;div class="log-speaker"&gt;${item.speaker}&lt;/div&gt;` : "";
+        const parsedLogText = parseColorTags(item.text);
+        itemEl.innerHTML = `${speakerHtml}&lt;div class="log-text"&gt;${parsedLogText}&lt;/div&gt;`;
+        
+        logContainerEl.appendChild(itemEl);
+      });
+    }
+
+    logModalEl.style.display = "flex";
+    logContainerEl.scrollTop = logContainerEl.scrollHeight;
+  }
+
+  function closeLogModal() {
+    logModalEl.style.display = "none";
+  }
+
+  function showGameUI() {
+    titleScreenEl.style.display = "none";
+    staffCreditsEl.style.display = "none";
+    messageBoxEl.style.display = "block";
+    systemMenuEl.style.display = "flex";
+    favorDisplayEl.style.display = "flex";
+    isCreditsActive = false;
+    isFinalCreditScreen = false;
+  }
+
+  function showTitleUI() {
+    stopAutoSkip();
+    clearTimeout(creditsTimer);
+    titleScreenEl.style.display = "flex";
+    staffCreditsEl.style.display = "none";
+    messageBoxEl.style.display = "none";
+    systemMenuEl.style.display = "none";
+    favorDisplayEl.style.display = "none";
+    characterImageEl.style.display = "none";
+    choiceContainerEl.innerHTML = "";
+    isCreditsActive = false;
+    isFinalCreditScreen = false;
+
+    if (TITLE_BGM_URL) {
+      playBgm(TITLE_BGM_URL);
+    }
+  }
+
+  function renderCreditStep(index) {
+    clearTimeout(creditsTimer);
+
+    const data = creditsData[index];
+    if (!data) return;
+
+    if (data.isFinal) {
+      creditsImgAreaEl.style.width = "100%";
+      creditsImgAreaEl.style.backgroundImage = `url('${data.img}')`;
+      creditsTextAreaEl.style.display = "none";
+      thanksTextEl.style.display = "block";
+      isFinalCreditScreen = true;
+    } else {
+      creditsImgAreaEl.style.width = "50%";
+      creditsImgAreaEl.style.backgroundImage = `url('${data.img}')`;
+      creditsTextAreaEl.style.display = "flex";
+      thanksTextEl.style.display = "none";
+
+      let html = "";
+      data.roles.forEach(item => {
+        html += `&lt;div class="credits-role"&gt;${item.role}&lt;/div&gt;`;
+        html += `&lt;div class="credits-name"&gt;${item.name}&lt;/div&gt;`;
+      });
+      creditsTextAreaEl.innerHTML = html;
+      isFinalCreditScreen = false;
+
+      creditsTimer = setTimeout(() => {
+        nextCreditStep();
+      }, 3000);
+    }
+  }
+
+  function nextCreditStep() {
+    if (isFading) return;
+
+    if (isFinalCreditScreen) {
+      playSe(SOUND_EFFECTS.click);
+      fadeOverlayEl.classList.add("is-active");
+      setTimeout(() => {
+        showTitleUI();
+        fadeOverlayEl.classList.remove("is-active");
+      }, fadeDuration);
+      return;
+    }
+
+    currentCreditIndex++;
+    if (currentCreditIndex &gt;= creditsData.length) return;
+
+    isFading = true;
+    fadeOverlayEl.classList.add("is-active");
+
+    setTimeout(() => {
+      renderCreditStep(currentCreditIndex);
+      fadeOverlayEl.classList.remove("is-active");
+      setTimeout(() => {
+        isFading = false;
+      }, fadeDuration);
+    }, fadeDuration);
+  }
+
+  function startCredits() {
+    stopAutoSkip();
+    isCreditsActive = true;
+    currentCreditIndex = 0;
+    messageBoxEl.style.display = "none";
+    systemMenuEl.style.display = "none";
+    favorDisplayEl.style.display = "none";
+    characterImageEl.style.display = "none";
+
+    if (ENDING_BGM_URL) {
+      playBgm(ENDING_BGM_URL);
+    }
+
+    fadeOverlayEl.classList.add("is-active");
+    setTimeout(() => {
+      staffCreditsEl.style.display = "block";
+      renderCreditStep(0);
+      fadeOverlayEl.classList.remove("is-active");
+    }, fadeDuration);
+  }
+
+  function updateSceneElements(scene) {
+    currentSceneId = scene.id;
+
+    if (scene.bg !== undefined) {
+      if (scene.bg) {
+        gameContainerEl.style.backgroundImage = `url('${scene.bg}')`;
+      } else {
+        gameContainerEl.style.backgroundImage = "none";
+      }
+    }
+
+    if (scene.character !== undefined) {
+      if (scene.character) {
+        characterImageEl.src = scene.character;
+        characterImageEl.style.display = "block";
+
+        const pos = scene.characterPos || "center";
+        if (pos === "left") {
+          characterImageEl.style.left = "15%";
+          characterImageEl.style.transform = "translateX(-50%)";
+        } else if (pos === "right") {
+          characterImageEl.style.left = "85%";
+          characterImageEl.style.transform = "translateX(-50%)";
+        } else {
+          characterImageEl.style.left = "50%";
+          characterImageEl.style.transform = "translateX(-50%)";
+        }
+      } else {
+        characterImageEl.style.display = "none";
+      }
+    }
+
+    if (scene.bgm !== undefined) {
+      playBgm(scene.bgm);
+    }
+
+    if (scene.se) {
+      playSe(scene.se, 0.5);
+    }
+
+    speakerNameEl.textContent = scene.speaker;
+    choiceContainerEl.innerHTML = "";
+
+    typeWriter(scene.speaker, scene.text);
+
+    if (scene.choices) {
+      stopAutoSkip();
+      scene.choices.forEach(choice => {
+        const button = document.createElement("button");
+        button.className = "choice-btn";
+        button.textContent = choice.text;
+        button.onclick = (e) => {
+          e.stopPropagation();
+          playSe(SOUND_EFFECTS.select);
+
+          if (choice.favorChange !== undefined) {
+            const target = choice.favorTarget || "charaA";
+            if (typeof favorability !== "object" || favorability === null) {
+              favorability = createInitialFavorability();
+            }
+            if (favorability[target] === undefined) {
+              favorability[target] = 0;
+            }
+            favorability[target] += choice.favorChange;
+            updateFavorDisplay();
+          }
+
+          renderScene(choice.next);
+        };
+        choiceContainerEl.appendChild(button);
+      });
+    }
+  }
+
+  function renderScene(sceneId) {
+    clearTimeout(autoTimer);
+    if (isFading) return;
+
+    const scene = scenario.find(s => s.id === sceneId);
+    if (!scene) return;
+
+    if (isSkipMode && !isSceneRead(scene.id)) {
+      stopAutoSkip();
+    }
+
+    markSceneAsRead(scene.id);
+
+    const useFade = scene.fade && !isSkipMode;
+
+    if (useFade) {
+      isFading = true;
+      fadeOverlayEl.classList.add("is-active");
+
+      setTimeout(() => {
+        updateSceneElements(scene);
+        fadeOverlayEl.classList.remove("is-active");
+
+        setTimeout(() => {
+          isFading = false;
+        }, fadeDuration);
+      }, fadeDuration);
+    } else {
+      updateSceneElements(scene);
+    }
+  }
+
+  function getSlotKey(slotNum) {
+    return `novel_game_slot_${slotNum}`;
+  }
+
+  function updateModalSlots() {
+    for (let i = 1; i &lt;= 3; i++) {
+      const dataStr = localStorage.getItem(getSlotKey(i));
+      const previewEl = document.getElementById(`slot-preview-${i}`);
+      const dateEl = document.getElementById(`slot-date-${i}`);
+
+      if (dataStr) {
+        const data = JSON.parse(dataStr);
+        const cleanText = data.text.replace(/&lt;color:(.*?)&gt;(.*?)&lt;\/color&gt;/g, "$2");
+        const shortText = cleanText.length &gt; 20 ? cleanText.substring(0, 20) + "..." : cleanText;
+        
+        let favorText = "";
+        if (typeof data.favorability === "object" && data.favorability !== null) {
+          favorText = Object.entries(data.favorability)
+            .map(([k, v]) => `${FAVOR_NAME_MAP[k] || k}:${v}`)
+            .join(' ');
+        } else {
+          favorText = data.favorability ?? 0;
+        }
+
+        previewEl.textContent = `${data.speaker}: ${shortText} (${favorText})`;
+        dateEl.textContent = data.savedAt;
+      } else {
+        previewEl.textContent = "-- NO DATA --";
+        dateEl.textContent = "";
+      }
+    }
+  }
+
+  function openModal(mode) {
+    stopAutoSkip();
+    currentModalMode = mode;
+    modalTitleEl.textContent = mode === "save" ? "SAVE DATA" : "LOAD DATA";
+    updateModalSlots();
+    saveModalEl.style.display = "flex";
+  }
+
+  function closeModal() {
+    saveModalEl.style.display = "none";
+  }
+
+  function saveToSlot(slotNum) {
+    const scene = scenario.find(s => s.id === currentSceneId);
+    const saveDataObj = {
+      sceneId: currentSceneId,
+      speaker: scene ? scene.speaker : "",
+      text: scene ? scene.text : "",
+      favorability: favorability,
+      backlog: backlog,
+      savedAt: new Date().toLocaleString()
+    };
+
+    localStorage.setItem(getSlotKey(slotNum), JSON.stringify(saveDataObj));
+    updateModalSlots();
+    playSe(SOUND_EFFECTS.click);
+    alert(`スロット ${slotNum} にセーブしました。`);
+  }
+
+  function loadFromSlot(slotNum) {
+    const dataStr = localStorage.getItem(getSlotKey(slotNum));
+    if (!dataStr) {
+      alert("このスロットにはデータがありません。");
+      return;
+    }
+
+    const data = JSON.parse(dataStr);
+    
+    if (typeof data.favorability === "number") {
+      favorability = createInitialFavorability();
+      favorability.charaA = data.favorability;
+    } else {
+      favorability = data.favorability || createInitialFavorability();
+    }
+
+    backlog = data.backlog || [];
+    updateFavorDisplay();
+
+    playSe(SOUND_EFFECTS.click);
+    closeModal();
+    showGameUI();
+    renderScene(data.sceneId);
+  }
+
+  function checkConditionString(condStr) {
+    if (!condStr) return false;
+    const conditions = condStr.split(",").map(c => c.trim());
+    
+    return conditions.every(cond => {
+      const match = cond.match(/^([a-zA-Z0-9_]+)\s*(&gt;=|&lt;=|&gt;|&lt;|==|!=)\s*(-?\d+)$/);
+      if (!match) return false;
+      
+      const [, varName, op, valStr] = match;
+      const targetVal = Number(valStr);
+      const currentVal = (favorability && favorability[varName] !== undefined) ? favorability[varName] : 0;
+
+      switch (op) {
+        case "&gt;=": return currentVal &gt;= targetVal;
+        case "&lt;=": return currentVal &lt;= targetVal;
+        case "&gt;":  return currentVal &gt; targetVal;
+        case "&lt;":  return currentVal &lt; targetVal;
+        case "==": return currentVal === targetVal;
+        case "!=": return currentVal !== targetVal;
+        default:   return false;
+      }
+    });
+  }
+
+  function advanceStory() {
+    clearTimeout(autoTimer);
+    const currentScene = scenario.find(s => s.id === currentSceneId);
+    
+    if (currentScene && currentScene.startCredits) {
+      playSe(SOUND_EFFECTS.click);
+      startCredits();
+      return;
+    }
+
+    if (currentScene && currentScene.jumpTarget) {
+      if (labelMap[currentScene.jumpTarget] !== undefined) {
+        renderScene(labelMap[currentScene.jumpTarget]);
+        return;
+      }
+    }
+
+    if (currentScene && currentScene.isBranch) {
+      playSe(SOUND_EFFECTS.click);
+
+      const branchType = currentScene.branchType || "single";
+      const a = (typeof favorability === "object" && favorability !== null) ? (favorability.charaA || 0) : 0;
+      const b = (typeof favorability === "object" && favorability !== null) ? (favorability.charaB || 0) : 0;
+      const c = (typeof favorability === "object" && favorability !== null) ? (favorability.charaC || 0) : 0;
+
+      if (branchType === "single") {
+        const targetChara = currentScene.branchChara || "charaA";
+        const border = (currentScene.branchBorder !== undefined) ? currentScene.branchBorder : 10;
+        const currentVal = (typeof favorability === "object" && favorability !== null) ? (favorability[targetChara] || 0) : 0;
+
+        if (currentVal &gt;= border) {
+          const targetLabel = currentScene.branchTarget || currentScene.happyTarget;
+          if (targetLabel && labelMap[targetLabel] !== undefined) {
+            renderScene(labelMap[targetLabel]);
+            return;
+          }
+        }
+        
+        const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
+        if (elseLabel && labelMap[elseLabel] !== undefined) {
+          renderScene(labelMap[elseLabel]);
+        } else {
+          renderScene(currentScene.normalNext !== undefined ? currentScene.normalNext : 5);
+        }
+        return;
+      }
+      else if (branchType === "max") {
+        const maxFavor = Math.max(a, b, c);
+
+        if (maxFavor &lt;= 0) {
+          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
+          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+          return;
+        }
+
+        if (maxFavor === a && labelMap["A_route"] !== undefined) {
+          renderScene(labelMap["A_route"]);
+        } else if (maxFavor === b && labelMap["B_route"] !== undefined) {
+          renderScene(labelMap["B_route"]);
+        } else if (maxFavor === c && labelMap["C_route"] !== undefined) {
+          renderScene(labelMap["C_route"]);
+        } else {
+          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
+          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+        }
+        return;
+      }
+      else if (branchType === "multi") {
+        const isPassed = checkConditionString(currentScene.branchCond);
+
+        if (isPassed && currentScene.branchTarget && labelMap[currentScene.branchTarget] !== undefined) {
+          renderScene(labelMap[currentScene.branchTarget]);
+        } else {
+          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
+          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+        }
+        return;
+      }
+    }
+
+    if (currentScene && currentScene.next !== undefined) {
+      playSe(SOUND_EFFECTS.click);
+      renderScene(currentScene.next);
+    }
+  }
+
+  autoBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    isSkipMode = false;
+    isAutoMode = !isAutoMode;
+    updateAutoSkipUI();
+
+    if (isAutoMode && !isTyping) {
+      scheduleNextStep();
+    }
+  });
+
+  skipBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    isAutoMode = false;
+    isSkipMode = !isSkipMode;
+    updateAutoSkipUI();
+
+    if (isSkipMode) {
+      if (isTyping) {
+        clearInterval(typeTimer);
+        messageTextEl.innerHTML = parseColorTags(fullText);
+        isTyping = false;
+      }
+      scheduleNextStep();
+    }
+  });
+
+  logBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    stopAutoSkip();
+    openLogModal();
+  });
+
+  logCloseBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    closeLogModal();
+  });
+
+  gameContainerEl.addEventListener("wheel", (e) => {
+    if (messageBoxEl.style.display === "block" && logModalEl.style.display !== "flex") {
+      if (e.deltaY &lt; 0) {
+        stopAutoSkip();
+        openLogModal();
+      }
+    }
+  });
+
+  let touchStartY = 0;
+  gameContainerEl.addEventListener("touchstart", (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  gameContainerEl.addEventListener("touchend", (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    if (touchStartY - touchEndY &gt; 50 && messageBoxEl.style.display === "block" && logModalEl.style.display !== "flex") {
+      stopAutoSkip();
+      openLogModal();
+    }
+  }, { passive: true });
+
+  staffCreditsEl.addEventListener("click", () => {
+    if (isFinalCreditScreen) {
+      nextCreditStep();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "a" || e.key === "A") {
+      autoBtnEl.click();
+    } else if (e.key === "s" || e.key === "S") {
+      skipBtnEl.click();
+    } else if (e.key === "Enter") {
+      if (isCreditsActive) {
+        if (isFinalCreditScreen) {
+          nextCreditStep();
+        }
+      } else if (messageBoxEl.style.display === "block" && logModalEl.style.display !== "flex") {
+        messageBoxEl.click();
+      }
+    }
+  });
+
+  document.querySelectorAll(".slot-item").forEach(item => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const slotNum = item.getAttribute("data-slot");
+      if (currentModalMode === "save") {
+        saveToSlot(slotNum);
+      } else {
+        loadFromSlot(slotNum);
+      }
+    });
+  });
+
+  startBtnEl.addEventListener("click", () => {
+    favorability = createInitialFavorability();
+    backlog = [];
+    stopAutoSkip();
+    updateFavorDisplay();
+    playSe(SOUND_EFFECTS.click);
+    showGameUI();
+    renderScene(0);
+  });
+
+  titleLoadBtnEl.addEventListener("click", () => {
+    playSe(SOUND_EFFECTS.click);
+    openModal("load");
+  });
+
+  saveBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    openModal("save");
+  });
+
+  loadBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    openModal("load");
+  });
+
+  modalCloseBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    closeModal();
+  });
+
+  toTitleBtnEl.addEventListener("click", (e) => {
+    e.stopPropagation();
+    playSe(SOUND_EFFECTS.click);
+    if (confirm("タイトル画面に戻りますか？")) {
+      playBgm("");
+      showTitleUI();
+    }
+  });
+
+  messageBoxEl.addEventListener("click", () => {
+    if (isFading) return;
+    if (choiceContainerEl.children.length &gt; 0) return;
+
+    if (isAutoMode || isSkipMode) {
+      stopAutoSkip();
+    }
+
+    if (isTyping) {
+      playSe(SOUND_EFFECTS.click);
+      clearInterval(typeTimer);
+      messageTextEl.innerHTML = parseColorTags(fullText);
+      isTyping = false;
+      return;
+    }
+
+    advanceStory();
+  });
+
+  async function initApp() {
+    resizeGame();
+    loadReadScenes();
+    scenario = await loadScenarioFromTxt("scenario.txt");
+    updateModalSlots();
+    
+    showTitleUI();
+
+    const enableAudioOnFirstTouch = () => {
+      if (titleScreenEl.style.display !== "none" && TITLE_BGM_URL) {
+        playBgm(TITLE_BGM_URL);
+      }
+      document.removeEventListener("click", enableAudioOnFirstTouch);
+      document.removeEventListener("touchstart", enableAudioOnFirstTouch);
+    };
+
+    document.addEventListener("click", enableAudioOnFirstTouch);
+    document.addEventListener("touchstart", enableAudioOnFirstTouch);
+  }
+
+  initApp();
+  
+  const debugChannel = new BroadcastChannel('novel_game_debug');
+
+  function sendDebugStatus() {
+    debugChannel.postMessage({
+      type: 'STATE_UPDATE',
+      favorability: favorability,
+      currentSceneId: currentSceneId,
+      currentSpeaker: speakerNameEl.textContent,
+      currentText: fullText
+    });
+  }
+
+  debugChannel.onmessage = (event) => {
+    const data = event.data;
+    
+    if (data.type === 'SET_FAVORABILITY') {
+      if (data.target && typeof data.target === "string") {
+        if (typeof favorability !== "object" || favorability === null) {
+          favorability = createInitialFavorability();
+        }
+        favorability[data.target] = Number(data.value);
+      } else if (typeof data.value === "object" && data.value !== null) {
+        favorability = { ...data.value };
+      }
+      updateFavorDisplay();
+      sendDebugStatus();
+    } 
+    else if (data.type === 'JUMP_SCENE') {
+      const targetId = Number(data.value);
+      showGameUI();
+      renderScene(targetId);
+      sendDebugStatus();
+    }
+    else if (data.type === 'REQUEST_INITIAL_STATE') {
+      sendDebugStatus();
+    }
+  };
+
+  const originalRenderScene = renderScene;
+  renderScene = function(sceneId) {
+    originalRenderScene(sceneId);
+    sendDebugStatus();
+  };
+
+  const originalUpdateFavorDisplay = updateFavorDisplay;
+  updateFavorDisplay = function() {
+    originalUpdateFavorDisplay();
+    sendDebugStatus();
+  };
+
+  window.updateScenarioFromText = function(txtContent) {
+    scenario = parseScenarioText(txtContent);
+    favorability = createInitialFavorability();
+    backlog = [];
+    stopAutoSkip();
+    showGameUI();
+    renderScene(0);
+    sendDebugStatus();
+  };
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
+      </div>
+
+      <!-- 2. editor.html -->
+      <div id="editor-html" class="tab-content">
+        <div class="file-header">
+          <div class="file-info">
+            <span class="file-name">editor.html</span>
+            <span class="file-desc">シナリオエディタ（制作・編集用）</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode('code-editor-html', this)">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            コードをコピー
+          </button>
+        </div>
+        <div class="code-wrapper">
+          <pre><code id="code-editor-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;scenario.txt プレビューエディタ&lt;/title&gt;
+  
+  &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"&gt;
+  &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css"&gt;
+  &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"&gt;&lt;/script&gt;
+
+  &lt;style&gt;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #181825;
+      color: #cdd6f4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #11111b;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #313244;
+      height: 50px;
+    }
+
+    h1 { font-size: 16px; color: #f9e2af; font-weight: bold; }
+
+    .btn-group { display: flex; gap: 10px; align-items: center; }
+
+    button, label.file-label {
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary { background-color: #89b4fa; color: #11111b; }
+    .btn-primary:hover { background-color: #b4befe; }
+
+    .btn-secondary { background-color: #45475a; color: #cdd6f4; }
+    .btn-secondary:hover { background-color: #585b70; }
+    
+    .btn-preview { background-color: #a6e3a1; color: #11111b; }
+    .btn-preview:hover { background-color: #b3f0af; }
+
+    input[type="file"] { display: none; }
+
+    main {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      width: 100%;
+    }
+
+    .editor-pane {
+      width: 50%;
+      height: 100%;
+      border-right: 2px solid #313244;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .snippet-bar {
+      background-color: #181825;
+      border-bottom: 1px solid #313244;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .snippet-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      border-right: 1px solid #313244;
+      padding-right: 8px;
+      margin-right: 4px;
+    }
+
+    .snippet-group:last-child {
+      border-right: none;
+    }
+
+    .snippet-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 4px;
+      border: 1px solid #45475a;
+      background-color: #313244;
+      color: #cdd6f4;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .snippet-btn:hover {
+      background-color: #585b70;
+      border-color: #89b4fa;
+      color: #ffffff;
+    }
+
+    .snippet-btn-cmd { color: #f38ba8; }
+    .snippet-btn-val { color: #89dceb; }
+    
+    .snippet-btn-red   { color: #f38ba8; border-color: #f38ba8; }
+    .snippet-btn-blue  { color: #89b4fa; border-color: #89b4fa; }
+    .snippet-btn-green { color: #a6e3a1; border-color: #a6e3a1; }
+
+    .CodeMirror {
+      flex: 1;
+      height: auto;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .preview-pane {
+      width: 50%;
+      height: 100%;
+      background-color: #050a14;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .preview-header {
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 12px;
+      color: #a6adc8;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 10px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .cm-scenario-command { color: #f38ba8 !important; font-weight: bold; }
+    .cm-scenario-speaker { color: #f9e2af !important; font-weight: bold; }
+    .cm-scenario-label   { color: #a6e3a1 !important; font-weight: bold; }
+    .cm-scenario-comment { color: #6c7086 !important; font-style: italic; }
+    .cm-scenario-param   { color: #89dceb !important; }
+    .cm-scenario-tag     { color: #f5c2e7 !important; font-weight: bold; }
+  &lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;header&gt;
+  &lt;h1&gt;scenario.txt プレビューエディタ&lt;/h1&gt;
+  &lt;div class="btn-group"&gt;
+    &lt;button id="preview-btn" class="btn-preview"&gt;▶ プレビュー再生&lt;/button&gt;
+    &lt;label class="file-label btn-secondary"&gt;
+      ファイルを開く
+      &lt;input type="file" id="file-input" accept=".txt"&gt;
+    &lt;/label&gt;
+    &lt;button id="download-btn" class="btn-primary"&gt;scenario.txt を保存&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;div class="editor-pane"&gt;
+    &lt;div class="snippet-bar"&gt;
+      &lt;div class="snippet-group"&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@bg: images/"&gt;@bg&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@bgm: sound/"&gt;@bgm&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@se: sound/"&gt;@se&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@character: images/|pos:center"&gt;@character&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@fade: true"&gt;@fade&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@label: "&gt;@label&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@jump: "&gt;@jump&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@choice: 選択肢1|next:label1|favor:charaA:10 / 選択肢2|next:label2|favor:charaB:10"&gt;@choice&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="snippet-group"&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:single|chara:charaA|border:10|target:happy_end|else:normal_end"&gt;@branch(個別)&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:max|else:normal_end"&gt;@branch(最多)&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-cmd" data-snippet="@branch: type:multi|cond:charaA&gt;=10,charaB&gt;=10|target:true_end|else:normal_end"&gt;@branch(複合)&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="snippet-group"&gt;
+        &lt;button class="snippet-btn snippet-btn-val" data-snippet="favor:charaA:10"&gt;favor:charaA&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-val" data-snippet="favor:charaB:10"&gt;favor:charaB&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-val" data-snippet="favor:charaC:10"&gt;favor:charaC&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="snippet-group"&gt;
+        &lt;button class="snippet-btn snippet-btn-red" data-tag-color="red"&gt;文字:赤&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-blue" data-tag-color="blue"&gt;文字:青&lt;/button&gt;
+        &lt;button class="snippet-btn snippet-btn-green" data-tag-color="green"&gt;文字:緑&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;textarea id="editor"&gt;&lt;/textarea&gt;
+  &lt;/div&gt;
+
+  &lt;div class="preview-pane"&gt;
+    &lt;div class="preview-header"&gt;PREVIEW&lt;/div&gt;
+    &lt;iframe id="preview-frame" src="index.html"&gt;&lt;/iframe&gt;
+  &lt;/div&gt;
+&lt;/main&gt;
+
+&lt;script&gt;
+  CodeMirror.defineMode("novel-scenario", function() {
+    return {
+      token: function(stream) {
+        if (stream.sol() && (stream.match("#") || stream.match("//"))) {
+          stream.skipToEnd();
+          return "scenario-comment";
+        }
+
+        if (stream.sol() && stream.match("@")) {
+          if (stream.match("label") || stream.match("jump")) {
+            stream.skipToEnd();
+            return "scenario-label";
+          }
+          stream.eatWhile(/[a-zA-Z]/);
+          return "scenario-command";
+        }
+
+        if (stream.sol() && stream.match(/^[^:@&lt;&gt;\n\s]+(?=:)/)) {
+          return "scenario-speaker";
+        }
+
+        if (stream.match(/&lt;\/color&gt;/i) || stream.match(/&lt;color:[^&gt;]+&gt;/i)) {
+          return "scenario-tag";
+        }
+
+        if (stream.eat("|") || stream.eat("/")) {
+          return "scenario-param";
+        }
+
+        stream.next();
+        return null;
+      }
+    };
+  });
+
+  const initialText = `@bg: images/bg01.webp
+@bgm: 
+@se: sound/click.mp3
+@character: images/honoka.webp|pos:center
+ほのか:@jump コマンドで指定のラベルまで自動ジャンプできるようになったよ！
+
+@jump: scene2
+
+@label: scene1
+ほのか:ここはスキップされるよ！
+
+@label: scene2
+ほのか:ジャンプ成功！ここまでひとっ飛びだよ！`;
+
+  const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    mode: "novel-scenario",
+    theme: "dracula",
+    lineNumbers: true,
+    lineWrapping: true
+  });
+
+  editor.setValue(initialText);
+
+  function insertSnippet(text) {
+    const doc = editor.getDoc();
+    const cursor = doc.getCursor();
+    
+    doc.replaceRange(text, cursor);
+    editor.focus();
+  }
+
+  function insertColorTag(color) {
+    const doc = editor.getDoc();
+    const selection = doc.getSelection();
+    
+    if (selection) {
+      const wrappedText = `&lt;color:${color}&gt;${selection}&lt;/color&gt;`;
+      doc.replaceSelection(wrappedText);
+    } else {
+      const template = `&lt;color:${color}&gt;テキスト&lt;/color&gt;`;
+      insertSnippet(template);
+    }
+    editor.focus();
+  }
+
+  document.querySelectorAll('.snippet-btn').forEach(button =&gt; {
+    button.addEventListener('click', function() {
+      const snippet = this.getAttribute('data-snippet');
+      const tagColor = this.getAttribute('data-tag-color');
+      
+      if (tagColor) {
+        insertColorTag(tagColor);
+      } else if (snippet) {
+        insertSnippet(snippet);
+      }
+    });
+  });
+
+  const previewFrame = document.getElementById("preview-frame");
+  const previewBtn = document.getElementById("preview-btn");
+
+  function updatePreview() {
+    const scenarioText = editor.getValue();
+    
+    if (previewFrame.contentWindow && typeof previewFrame.contentWindow.updateScenarioFromText === 'function') {
+      previewFrame.contentWindow.updateScenarioFromText(scenarioText);
+    }
+  }
+
+  previewBtn.addEventListener("click", updatePreview);
+
+  document.getElementById("file-input").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      editor.setValue(e.target.result);
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById("download-btn").addEventListener("click", function() {
+    const text = editor.getValue();
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "scenario.txt";
+    a.click();
+    
+    URL.revokeObjectURL(url);
+  });
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
+      </div>
+      
+      <!-- 3. debug.html -->
+      <div id="debug-html" class="tab-content">
+        <div class="file-header">
+          <div class="file-info">
+            <span class="file-name">debug.html</span>
+            <span class="file-desc">変数管理ツール（デバッグ用）</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode('code-debug-html', this)">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            コードをコピー
+          </button>
+        </div>
+        <div class="code-wrapper">
+          <pre><code id="code-debug-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="ja"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;変数管理・デバッグツール - ノベルゲーム制作ツール&lt;/title&gt;
+  &lt;style&gt;
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: #111827;
+      color: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 18px;
+      border-bottom: 2px solid #374151;
+      padding-bottom: 8px;
+      color: #ffd166;
+      margin-top: 0;
+    }
+    .card {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #374151;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .chara-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111827;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid #374151;
+    }
+    .chara-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .chara-name {
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 14px;
+    }
+    .chara-key {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .input-group {
+      display: flex;
+      gap: 6px;
+    }
+    input[type="number"] {
+      width: 70px;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #4b5563;
+      background: #374151;
+      color: #fff;
+      text-align: right;
+      font-weight: bold;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .btn-apply-all {
+      width: 100%;
+      margin-top: 6px;
+      background: #059669;
+      padding: 8px;
+    }
+    .btn-apply-all:hover {
+      background: #047857;
+    }
+    .info-val {
+      font-size: 20px;
+      font-weight: bold;
+      color: #60a5fa;
+    }
+    .scene-preview {
+      font-size: 13px;
+      color: #d1d5db;
+      background: #111827;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;h1&gt;ノベルゲーム 変数管理ツール&lt;/h1&gt;
+
+  &lt;div class="card"&gt;
+    &lt;label&gt;好感度・ステータスパラメータ (favorability)&lt;/label&gt;
+    
+    &lt;div id="favor-container"&gt;
+    &lt;/div&gt;
+
+    &lt;button class="btn-apply-all" onclick="setAllFavorability()"&gt;全パラメータを一括変更&lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div class="card"&gt;
+    &lt;label&gt;現在のシーンID (currentSceneId)&lt;/label&gt;
+    &lt;div class="info-val" id="scene-id-disp"&gt;-&lt;/div&gt;
+    
+    &lt;label style="margin-top: 15px;"&gt;指定シーンへジャンプ (テスト用)&lt;/label&gt;
+    &lt;div class="input-group"&gt;
+      &lt;input type="number" id="jump-scene-input" value="0" placeholder="ID"&gt;
+      &lt;button onclick="jumpToScene()"&gt;ジャンプ&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;label style="margin-top: 12px;"&gt;現在のテキスト&lt;/label&gt;
+    &lt;div class="scene-preview"&gt;
+      &lt;b id="speaker-disp" style="color: #ffd166;"&gt;&lt;/b&gt;&lt;br&gt;
+      &lt;span id="text-disp"&gt;---&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    const channel = new BroadcastChannel('novel_game_debug');
+
+    const FAVOR_NAME_MAP = {
+      charaA: "ほのか",
+      charaB: "裕也",
+      charaC: "三月"
+    };
+
+    channel.postMessage({ type: 'REQUEST_INITIAL_STATE' });
+
+    channel.onmessage = (event) =&gt; {
+      const data = event.data;
+      if (data.type === 'STATE_UPDATE') {
+        renderFavorInputs(data.favorability);
+        document.getElementById('scene-id-disp').textContent = data.currentSceneId;
+        document.getElementById('speaker-disp').textContent = data.currentSpeaker ? `【${data.currentSpeaker}】` : '（話者なし）';
+        
+        const cleanText = (data.currentText || '').replace(/&lt;color:(.*?)&gt;(.*?)&lt;\/color&gt;/g, '$2');
+        document.getElementById('text-disp').textContent = cleanText;
+      }
+    };
+
+    function renderFavorInputs(favorability) {
+      const container = document.getElementById('favor-container');
+      
+      if (typeof favorability !== "object" || favorability === null) {
+        favorability = { charaA: Number(favorability) || 0, charaB: 0, charaC: 0 };
+      }
+
+      for (const [key, val] of Object.entries(favorability)) {
+        let row = document.getElementById(`favor-row-${key}`);
+        const displayName = FAVOR_NAME_MAP[key] || key;
+
+        if (!row) {
+          row = document.createElement('div');
+          row.id = `favor-row-${key}`;
+          row.className = 'chara-row';
+          row.innerHTML = `
+            &lt;div class="chara-info"&gt;
+              &lt;span class="chara-name"&gt;${displayName}&lt;/span&gt;
+              &lt;span class="chara-key"&gt;${key}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class="input-group"&gt;
+              &lt;input type="number" id="favor-input-${key}" value="${val}"&gt;
+              &lt;button onclick="setSingleFavorability('${key}')"&gt;反映&lt;/button&gt;
+            &lt;/div&gt;
+          `;
+          container.appendChild(row);
+        } else {
+          const input = document.getElementById(`favor-input-${key}`);
+          if (document.activeElement !== input) {
+            input.value = val;
+          }
+        }
+      }
+    }
+
+    function setSingleFavorability(targetKey) {
+      const val = document.getElementById(`favor-input-${targetKey}`).value;
+      channel.postMessage({
+        type: 'SET_FAVORABILITY',
+        target: targetKey,
+        value: Number(val)
+      });
+    }
+
+    function setAllFavorability() {
+      const updatedFavor = {};
+      const inputs = document.querySelectorAll('[id^="favor-input-"]');
+      
+      inputs.forEach(input =&gt; {
+        const key = input.id.replace('favor-input-', '');
+        updatedFavor[key] = Number(input.value);
+      });
+
+      channel.postMessage({
+        type: 'SET_FAVORABILITY',
+        value: updatedFavor
+      });
+    }
+
+    function jumpToScene() {
+      const val = document.getElementById('jump-scene-input').value;
+      channel.postMessage({ type: 'JUMP_SCENE', value: val });
+    }
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </div>
+      </div>
+
+      <!-- 4. scenario.txt -->
+      <div id="scenario-txt" class="tab-content">
+        <div class="file-header">
+          <div class="file-info">
+            <span class="file-name">scenario.txt</span>
+            <span class="file-desc">サンプルシナリオデータ（テキストファイル）</span>
+          </div>
+          <button class="copy-btn" onclick="copyCode('code-scenario-txt', this)">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            コードをコピー
+          </button>
+        </div>
+        <div class="code-wrapper">
+          <pre><code id="code-scenario-txt"></code></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- トースト通知用HTML -->
+  <div id="toast">
+    <span class="toast-icon">✓</span>
+    <span id="toast-message">クリップボードにコピーしました！</span>
+  </div>
+
+  <footer>
+    <p>&copy; ノベルゲーム制作ツール All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // タブ切り替え処理
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      btnElement.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // コードのコピー処理
+    function copyCode(elementId, btnElement) {
+      const codeElement = document.getElementById(elementId);
+      const textArea = document.createElement('textarea');
+      textArea.innerHTML = codeElement.innerHTML;
+      const textToCopy = textArea.value;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalText = btnElement.innerHTML;
+        btnElement.classList.add('copied');
+        btnElement.innerHTML = `
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          コピー完了！
+        `;
+
+        showToast('コードをクリップボードにコピーしました！');
+
+        setTimeout(() => {
+          btnElement.classList.remove('copied');
+          btnElement.innerHTML = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('コピー失敗:', err);
+        showToast('コピーに失敗しました。手動で選択してコピーしてください。');
+      });
+    }
+
+    // トースト表示処理
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

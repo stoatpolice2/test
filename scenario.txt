@@ -1,0 +1,129 @@
+@bg: images/bg01.webp
+@bgm: sound/sound01.mp3
+@character: images/honoka.webp|pos:center
+ほのか:こんにちは！<color:green>『ノベルゲーム制作ツール』</color>へようこそ！
+
+ほのか:このツールでは、プログラミングができなくてもノベルゲームが作れちゃうんだよ。
+
+ほのか:これから私と一緒に、このツールで「どんなことができるか」を体験してみよう！
+
+@choice: ぜひ教えて！|next:explain1|favor:charaA:10 / 簡単にできるの？|next:explain2|favor:charaA:0
+ほのか:心の準備はいいかな？
+
+@label: explain1
+@se: sound/ok.mp3
+<color:blue>ほのかの好感度が10あがった！</color>
+
+@label: explain2
+ほのか:まずは <color:green>【画面演出と立ち絵の位置移動】</color> から紹介するね！
+
+@character: images/honoka.webp|pos:left
+ほのか:こんなふうに『<color:green>|pos:left</color>』と書くと立ち絵を左側に表示できるよ。
+
+@character: images/honoka.webp|pos:right
+ほのか:そして『<color:green>|pos:right</color>』と書けば右側にも移動できちゃうんだ！
+
+@character: images/honoka.webp|pos:center
+@bg: images/bg02.webp
+@bgm: sound/sound02.mp3
+ほのか:背景（<color:green>@bg</color>）やBGM（<color:green>@bgm</color>）を変えるだけで、一気に場面転換の雰囲気を変えられるよ。
+
+ほのか:次は<color:green>【快適なシステム機能】</color>の紹介だよ！画面右上のボタンを見てみてね。
+
+ほのか:<color:green>『AUTO』</color>で文章を自動進行、<color:green>『SKIP』</color>で一度読んだ文章（既読）だけを高速スキップできるんだ。
+
+ほ现象:<color:green>『LOG』</color>を押すか上ホイール・上スワイプをすると、いつでもバックログ（既読履歴）を確認できるよ。
+
+ほのか:もちろん<color:green>『SAVE/LOAD』</color>で最大3つのスロットにゲームデータを保存・読み込みもできるから安心だね！
+
+ほのか:それじゃあ次は<color:green>【選択肢とルート分岐】</color>を試してみようか！
+
+ほのか:あっ、ちょうどいいところに！裕也くーん！三月ちゃーん！
+
+@character: images/yuya.webp|pos:left
+裕也:ん？なんだよ、なんか用か？
+
+@character: images/mitsuki.webp|pos:right
+三月:なに？そんなにヒマじゃないんだけど。
+
+@character: images/honoka.webp|pos:center
+ほのか:じゃあ、さっそく選択肢を出してみるね。
+
+ほのか:誰と一緒にチュートリアルの後半を進めたい？
+
+@choice: ほのかと話す|next:talk_honoka|favor:charaA:10 / 裕也と話す|next:talk_yuya|favor:charaB:10 / 三月と話す|next:talk_mitsuki|favor:charaC:10
+
+@label: talk_honoka
+@character: images/honoka.webp|pos:center
+@se: sound/ok.mp3
+ほのか:私を選んでくれたんだね！ありがとう！
+
+ほのか:選択肢の『<color:green>favor:charaA:10</color>』パラメータで、左上の画面に表示されている好感度が加算されたよ！
+
+@jump: branch_check
+
+@label: talk_yuya
+@character: images/yuya.webp|pos:center
+@se: sound/ok.mp3
+裕也:お？オレを選ぶなんてお前、お目が高いな！
+
+裕也:選択肢の『<color:green>favor:charaB:10</color>』でオレの好感度が上がったぞ！画面左上をチェックしてみてくれ！
+
+@jump: branch_check
+
+@label: talk_mitsuki
+@character: images/mitsuki.webp|pos:center
+@se: sound/ok.mp3
+三月:……私？ふうん。変わってるね。
+
+三月:『<color:green>favor:charaC:10</color>』のコマンドで、私の数値が10加算されたよ。
+
+@jump: branch_check
+
+@label: branch_check
+@character: images/honoka.webp|pos:center
+ほのか:ここからは『<color:green>@branch</color>』コマンドを使った、自動ルート分岐のテストだよ！
+
+ほのか:今回は一番好感度が高いキャラクターの個別ルート（<color:green>type:max</color>）へ自動でジャンプしてみるね！
+
+@branch: type:max
+
+@label: A_route
+@character: images/honoka.webp|pos:center
+ほのか:ここは【ほのかルート】だよ！私の好感度が一番高かったからここに来たんだね！
+
+ほのか:『<color:green>type:max</color>』を使うと、一番値が高いキャラのルート（A_route, B_route, C_route）へ自動分岐できるんだよ。
+
+@jump: ending_tutorial
+
+@label: B_route
+@character: images/yuya.webp|pos:center
+裕也:ここは【裕也ルート】だ！オレの数値を一番高くしてくれたんだな、サンキュな！
+
+裕也:ゲーム制作で「一番仲良くなったキャラの個別エンディングに行く」みたいな演出が簡単に作れるぞ！
+
+@jump: ending_tutorial
+
+@label: C_route
+@character: images/mitsuki.webp|pos:center
+三月:ここは【三月ルート】……私の数値が最高だった証拠。
+
+三月:複雑なフラグ管理をしなくても、好感度の比較だけで分岐できるのは……とても合理的。
+
+@jump: ending_tutorial
+
+@label: ending_tutorial
+@bg: images/bg03.webp
+@bgm: sound/sound02.mp3
+@character: images/honoka.webp|pos:center
+ほのか:チュートリアルはこれでバッチリ！
+
+@character: images/yuya.webp|pos:left
+裕也:あとはシナリオテキストを書き換えるだけで、お前だけのオリジナルノベルゲームが作れるぜ！
+
+@character: images/mitsuki.webp|pos:right
+三月:最後に『<color:green>@startCredits:true</color>』を呼び出すと、スタッフロールが再生されるよ。
+
+@startCredits: true
+@character: images/honoka.webp|pos:center
+ほのか:それじゃあ、素敵なゲームを作ってね！バイバイー！
