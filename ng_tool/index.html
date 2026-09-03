@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ノベルゲーム</title>
+  <title>ノベルゲーム制作ツール</title>
   <style>
     /* =========================================================
        UIカラー定義（ここを変更するだけで全体のテーマが変わります）
@@ -696,126 +696,139 @@
   let currentBgmSrc = "";
 
   // テキストからシナリオデータをパースする共通関数
-  function parseScenarioText(text) {
-    const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-    const parsedScenario = [];
-    labelMap = {};
-    let currentScene = {};
-    let sceneIdCounter = 0;
+function parseScenarioText(text) {
+  const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+  const parsedScenario = [];
+  labelMap = {};
+  let currentScene = {};
+  let sceneIdCounter = 0;
 
-    lines.forEach(line => {
-      line = line.trim();
+  lines.forEach(line => {
+    line = line.trim();
 
-      if (line.startsWith("#") || line.startsWith("//")) {
-        return;
-      }
+    if (line.startsWith("#") || line.startsWith("//")) {
+      return;
+    }
 
-      if (line.startsWith("@")) {
-        const firstColonIdx = line.indexOf(":");
-        let command = "";
-        let param = "";
+    if (line.startsWith("@")) {
+      const firstColonIdx = line.indexOf(":");
+      let command = "";
+      let param = "";
 
-        if (firstColonIdx !== -1) {
-          command = line.slice(1, firstColonIdx).trim();
-          param = line.slice(firstColonIdx + 1).trim();
-        } else {
-          command = line.slice(1).trim();
-        }
-
-        if (command === "label") {
-          labelMap[param] = sceneIdCounter;
-          currentScene.label = param;
-        }
-        else if (command === "bg") currentScene.bg = param;
-        else if (command === "bgm") currentScene.bgm = param;
-        else if (command === "character") {
-          if (param.includes("|")) {
-            const parts = param.split("|").map(s => s.trim());
-            currentScene.character = parts[0];
-            parts.slice(1).forEach(p => {
-              if (p.startsWith("pos:")) currentScene.characterPos = p.replace("pos:", "").trim();
-            });
-          } else {
-            currentScene.character = param;
-            currentScene.characterPos = "center";
-          }
-        }
-        else if (command === "fade") currentScene.fade = (param === "true");
-        else if (command === "startCredits") currentScene.startCredits = (param === "true");
-        else if (command === "branch") {
-          currentScene.isBranch = true;
-          const parts = param.split("|");
-          parts.forEach(p => {
-            if (p.startsWith("type:")) currentScene.branchType = p.replace("type:", "").trim();
-            if (p.startsWith("chara:")) currentScene.branchChara = p.replace("chara:", "").trim();
-            if (p.startsWith("border:")) currentScene.branchBorder = parseInt(p.replace("border:", "").trim());
-            if (p.startsWith("target:")) currentScene.branchTarget = p.replace("target:", "").trim();
-            if (p.startsWith("else:")) currentScene.elseTarget = p.replace("else:", "").trim();
-            if (p.startsWith("cond:")) currentScene.branchCond = p.replace("cond:", "").trim();
-            if (p.startsWith("happy:")) currentScene.happyTarget = p.replace("happy:", "").trim();
-            if (p.startsWith("normal:")) currentScene.normalTarget = p.replace("normal:", "").trim();
-          });
-        }
-        else if (command === "choice") {
-          const choiceItems = param.split("/");
-          currentScene.choices = choiceItems.map(item => {
-            const parts = item.split("|").map(s => s.trim());
-            const text = parts[0];
-            let nextTarget = null;
-            let favorTarget = "charaA"; 
-            let favorChange = 0;
-
-            parts.slice(1).forEach(p => {
-              if (p.startsWith("next:")) nextTarget = p.replace("next:", "").trim();
-              
-              if (p.startsWith("favor:")) {
-                const val = p.replace("favor:", "").trim();
-                if (val.includes(":")) {
-                  const [target, amount] = val.split(":");
-                  favorTarget = target.trim();
-                  favorChange = parseInt(amount);
-                } else {
-                  favorChange = parseInt(val);
-                }
-              }
-            });
-
-            return { text, nextTarget, favorTarget, favorChange };
-          });
-        }
-        return;
-      }
-
-      if (line.includes(":")) {
-        const [speaker, ...textParts] = line.split(":");
-        currentScene.speaker = speaker.trim();
-        currentScene.text = textParts.join(":").trim();
+      if (firstColonIdx !== -1) {
+        command = line.slice(1, firstColonIdx).trim();
+        param = line.slice(firstColonIdx + 1).trim();
       } else {
-        currentScene.speaker = "";
-        currentScene.text = line;
+        command = line.slice(1).trim();
       }
 
-      currentScene.id = sceneIdCounter;
-      currentScene.next = sceneIdCounter + 1;
-      parsedScenario.push(currentScene);
-      sceneIdCounter++;
-      currentScene = {};
-    });
-
-    parsedScenario.forEach(scene => {
-      if (scene.choices) {
-        scene.choices.forEach(choice => {
-          if (choice.nextTarget) {
-            choice.next = (labelMap[choice.nextTarget] !== undefined) ? labelMap[choice.nextTarget] : parseInt(choice.nextTarget);
-          }
+      if (command === "label") {
+        labelMap[param] = sceneIdCounter;
+        currentScene.label = param;
+      }
+      else if (command === "bg") currentScene.bg = param;
+      else if (command === "bgm") currentScene.bgm = param;
+      else if (command === "se") currentScene.se = param;
+      else if (command === "character") {
+        if (param.includes("|")) {
+          const parts = param.split("|").map(s => s.trim());
+          currentScene.character = parts[0];
+          parts.slice(1).forEach(p => {
+            if (p.startsWith("pos:")) currentScene.characterPos = p.replace("pos:", "").trim();
+          });
+        } else {
+          currentScene.character = param;
+          currentScene.characterPos = "center";
+        }
+      }
+      else if (command === "fade") currentScene.fade = (param === "true");
+      else if (command === "startCredits") currentScene.startCredits = (param === "true");
+      
+      // ▼ ここから変更（直前のテキストシーンにジャンプを紐づける）
+      else if (command === "jump") {
+        if (parsedScenario.length > 0) {
+          parsedScenario[parsedScenario.length - 1].jumpTarget = param;
+        } else {
+          currentScene.jumpTarget = param;
+        }
+      }
+      // ▲ ここまで変更
+      
+      else if (command === "branch") {
+        currentScene.isBranch = true;
+        const parts = param.split("|");
+        parts.forEach(p => {
+          if (p.startsWith("type:")) currentScene.branchType = p.replace("type:", "").trim();
+          if (p.startsWith("chara:")) currentScene.branchChara = p.replace("chara:", "").trim();
+          if (p.startsWith("border:")) currentScene.branchBorder = parseInt(p.replace("border:", "").trim());
+          if (p.startsWith("target:")) currentScene.branchTarget = p.replace("target:", "").trim();
+          if (p.startsWith("else:")) currentScene.elseTarget = p.replace("else:", "").trim();
+          if (p.startsWith("cond:")) currentScene.branchCond = p.replace("cond:", "").trim();
+          if (p.startsWith("happy:")) currentScene.happyTarget = p.replace("happy:", "").trim();
+          if (p.startsWith("normal:")) currentScene.normalTarget = p.replace("normal:", "").trim();
         });
       }
-      if (scene.happyTarget && labelMap[scene.happyTarget] !== undefined) scene.happyNext = labelMap[scene.happyTarget];
-      if (scene.normalTarget && labelMap[scene.normalTarget] !== undefined) scene.normalNext = labelMap[scene.normalTarget];
-    });
+      else if (command === "choice") {
+        const choiceItems = param.split("/");
+        currentScene.choices = choiceItems.map(item => {
+          const parts = item.split("|").map(s => s.trim());
+          const text = parts[0];
+          let nextTarget = null;
+          let favorTarget = "charaA"; 
+          let favorChange = 0;
 
-    return parsedScenario;
-  }
+          parts.slice(1).forEach(p => {
+            if (p.startsWith("next:")) nextTarget = p.replace("next:", "").trim();
+            
+            if (p.startsWith("favor:")) {
+              const val = p.replace("favor:", "").trim();
+              if (val.includes(":")) {
+                const [target, amount] = val.split(":");
+                favorTarget = target.trim();
+                favorChange = parseInt(amount);
+              } else {
+                favorChange = parseInt(val);
+              }
+            }
+          });
+
+          return { text, nextTarget, favorTarget, favorChange };
+        });
+      }
+      return;
+    }
+
+    // ★修正箇所：話者名判定を厳密化（行頭に記号やスペースを含まない「名前:」がある場合のみ判定）
+    const speakerMatch = line.match(/^([^:@<>\n\s]+):(.*)$/);
+    if (speakerMatch) {
+      currentScene.speaker = speakerMatch[1].trim();
+      currentScene.text = speakerMatch[2].trim();
+    } else {
+      currentScene.speaker = "";
+      currentScene.text = line;
+    }
+
+    currentScene.id = sceneIdCounter;
+    currentScene.next = sceneIdCounter + 1;
+    parsedScenario.push(currentScene);
+    sceneIdCounter++;
+    currentScene = {};
+  });
+
+  parsedScenario.forEach(scene => {
+    if (scene.choices) {
+      scene.choices.forEach(choice => {
+        if (choice.nextTarget) {
+          choice.next = (labelMap[choice.nextTarget] !== undefined) ? labelMap[choice.nextTarget] : parseInt(choice.nextTarget);
+        }
+      });
+    }
+    if (scene.happyTarget && labelMap[scene.happyTarget] !== undefined) scene.happyNext = labelMap[scene.happyTarget];
+    if (scene.normalTarget && labelMap[scene.normalTarget] !== undefined) scene.normalNext = labelMap[scene.normalTarget];
+  });
+
+  return parsedScenario;
+}
 
   // txtファイル読み込み部分
   async function loadScenarioFromTxt(filePath) {
@@ -1198,6 +1211,11 @@
       playBgm(scene.bgm);
     }
 
+    // @se の再生処理（BGMを変更せずに一度だけ再生）
+    if (scene.se) {
+      playSe(scene.se, 0.5);
+    }
+
     speakerNameEl.textContent = scene.speaker;
     choiceContainerEl.innerHTML = "";
 
@@ -1288,7 +1306,6 @@
           favorText = data.favorability ?? 0;
         }
 
-        <!-- セーブ・ロード画面に文字を表示する -->
         previewEl.textContent = `${data.speaker}: ${shortText} (${favorText})`;
         dateEl.textContent = data.savedAt;
       } else {
@@ -1387,6 +1404,14 @@
       return;
     }
 
+    // @jump コマンドによる自動ジャンプ処理を追加
+    if (currentScene && currentScene.jumpTarget) {
+      if (labelMap[currentScene.jumpTarget] !== undefined) {
+        renderScene(labelMap[currentScene.jumpTarget]);
+        return;
+      }
+    }
+
     // パターン切り替え対応の統合分岐処理
     if (currentScene && currentScene.isBranch) {
       playSe(SOUND_EFFECTS.click);
@@ -1429,12 +1454,12 @@
           return;
         }
 
-        if (maxFavor === a && labelMap["honoka_end"] !== undefined) {
-          renderScene(labelMap["honoka_end"]);
-        } else if (maxFavor === b && labelMap["yuya_end"] !== undefined) {
-          renderScene(labelMap["yuya_end"]);
-        } else if (maxFavor === c && labelMap["mitsuki_end"] !== undefined) {
-          renderScene(labelMap["mitsuki_end"]);
+        if (maxFavor === a && labelMap["A_route"] !== undefined) {
+          renderScene(labelMap["A_route"]);
+        } else if (maxFavor === b && labelMap["B_route"] !== undefined) {
+          renderScene(labelMap["B_route"]);
+        } else if (maxFavor === c && labelMap["C_route"] !== undefined) {
+          renderScene(labelMap["C_route"]);
         } else {
           const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
           renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);

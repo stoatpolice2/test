@@ -200,9 +200,11 @@
       <div class="snippet-group">
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@bg: images/">@bg</button>
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@bgm: sound/">@bgm</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@se: sound/">@se</button>
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@character: images/|pos:center">@character</button>
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@fade: true">@fade</button>
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@label: ">@label</button>
+        <button class="snippet-btn snippet-btn-cmd" data-snippet="@jump: ">@jump</button>
         <button class="snippet-btn snippet-btn-cmd" data-snippet="@choice: 選択肢1|next:label1|favor:charaA:10 / 選択肢2|next:label2|favor:charaB:10">@choice</button>
       </div>
       <!-- 分岐コマンドグループ -->
@@ -236,7 +238,7 @@
 </main>
 
 <script>
-  // 1. ノベルゲーム用独自構文ハイライターの定義（修正版）
+  // 1. ノベルゲーム用独自構文ハイライターの定義
   CodeMirror.defineMode("novel-scenario", function() {
     return {
       token: function(stream) {
@@ -248,7 +250,7 @@
 
         // @コマンド行
         if (stream.sol() && stream.match("@")) {
-          if (stream.match("label")) {
+          if (stream.match("label") || stream.match("jump")) {
             stream.skipToEnd();
             return "scenario-label";
           }
@@ -280,10 +282,17 @@
   // 初期編集テキスト
   const initialText = `@bg: images/bg01.webp
 @bgm: 
+@se: sound/click.mp3
 @character: images/honoka.webp|pos:center
-ほのか:文字の色を変えるタグにも対応したよ！
+ほのか:@jump コマンドで指定のラベルまで自動ジャンプできるようになったよ！
 
-ほのか:<color:red>赤色</color>や<color:blue>青色</color>、<color:green>緑色</color>の文字で演出を盛り上げよう！`;
+@jump: scene2
+
+@label: scene1
+ほのか:ここはスキップされるよ！
+
+@label: scene2
+ほのか:ジャンプ成功！ここまでひとっ飛びだよ！`;
 
   // 2. CodeMirrorエディタの初期化
   const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
