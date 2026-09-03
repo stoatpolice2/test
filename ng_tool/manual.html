@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ノベルゲーム制作ツール - 使い方マニュアル</title>
+  <title>使い方マニュアル - ノベルゲーム制作ツール</title>
   <style>
-    /* 明るく親しみやすいカラーパレットの設定 */
+    /* カラーパレットの設定 */
     :root {
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
@@ -352,7 +352,7 @@
       font-weight: 500;
     }
 
-    /* キャラクター（ほのか）のチャット風ワンポイント解説用スタイル */
+    /* チャット風ワンポイント解説用スタイル */
     .chara-commentary {
       margin: 30px 0 10px 0;
       padding: 24px;
@@ -595,7 +595,7 @@
 
     <section id="sec2">
       <h2>2. 制作・動作確認</h2>
-      <p>本ツールには、ブラウザ上でシナリオを作成できる「専用エディタ」と、分岐や変数の挙動をリアルタイムで検証できる「変数管理＆デバッグツール」が付属しています。<br>「editor.html」や「debug.html」をブラウザ（Chrome, Edge, Safari等）で開いてご使用ください。</p>
+      <p>本ツールには、ブラウザ上でシナリオを作成できる「専用エディタ」と、分岐や変数の挙動をリアルタイムで検証できる「変数管理＆デバッグツール」が付属しています。ブラウザ（Chrome, Edge等）で開いてご使用ください。</p>
 
       <div class="alert-box">
         <h4>【エディタ・デバッグツール起動時の注意点】</h4>
@@ -617,7 +617,7 @@
       </ul>
 
       <h3>変数管理＆デバッグツール（debug.html）の機能と使い方</h3>
-      <p>ゲーム本体（index.html）と並べて開くことで、ブラウザ間のリアルタイム通信機能（BroadcastChannel API）を通じてゲームの状態を外部から確認・操作できます。シナリオ後半のテストや分岐条件のチェックに活用してください。</p>
+      <p>ゲーム本体（index.html）と並べて開くことで、ブラウザ間のリアルタイム通信機能を通じてゲームの状態を外部から確認・操作できます。シナリオ後半のテストや分岐条件のチェックに活用してください。</p>
       
       <div class="image-placeholder">
         【サンプル画像スペース 2：debug.html の画面キャプチャ】
@@ -908,7 +908,7 @@ const SOUND_EFFECTS = {
       <p>画面左上に表示される好感度（変数）を非表示にしたい場合は以下の部分を削除してください。</p>
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
-        <pre><code>&lt;!-- 好感度・ステータス表示（縦並びエリア） --&gt;
+        <pre><code>&lt;!-- 好感度・ステータス表示 --&gt;
 &lt;div id="favor-display"&gt;&lt;/div&gt;</code></pre>
       </div>
       
