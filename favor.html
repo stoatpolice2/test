@@ -523,14 +523,14 @@
       <div class="chara-commentary">
         <div class="chara-commentary-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          亮のワンポイントアドバイス！
+          ほのかのワンポイントアドバイス！
         </div>
         <div class="chat-row">
           <div class="chat-avatar">
-            <img src="images/ryo.webp" alt="亮">
+            <img src="images/honoka.webp" alt="ほのか">
           </div>
           <div class="chat-bubble">
-            プレイヤーがゲーム中で選んだ選択肢に合わせて数値がプラスやマイナスに動いて、ゲーム画面左上の表示もリアルタイムで更新されるぞ。
+            プレイヤーがゲーム中で選んだ選択肢に合わせて数値がプラスやマイナスに動いて、ゲーム画面左上の表示もリアルタイムで更新されるよ！
           </div>
         </div>
       </div>
@@ -541,7 +541,7 @@
     <!-- 2. 選択肢で数値を増減させる -->
     <section id="var-sec2">
       <h2>2. 選択肢で数値を増減させる方法</h2>
-      <p>シナリオファイル（<code>scenario.txt</code>）の <code>@choice</code> コマンド内で <code>favor:キャラ名:数値</code> を記述すると、選択肢が選ばれた瞬間に指定した変数が加減算されます。</p>
+      <p>シナリオファイル（<code>scenario.txt</code>）の <code>@choice</code> コマンド内で <code>favor:変数名:数値</code> を記述すると、選択肢が選ばれた瞬間に指定した変数が加減算されます。</p>
 
       <h3>記述ルール</h3>
       <p>「<code>ボタンの文章|next:移動先ラベル|favor:対象キー:変化量</code>」の順で記述し、複数選択肢は「<code>/</code>」で区切ります。</p>
@@ -561,15 +561,15 @@
         <div class="chara-commentary">
         <div class="chara-commentary-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          梓のワンポイントアドバイス！
+          亮のワンポイントアドバイス！
         </div>
         <div class="chat-row">
           <div class="chat-avatar">
-            <img src="images/azusa.webp" alt="梓">
+            <img src="images/ryo.webp" alt="亮">
           </div>
           <div class="chat-bubble">
-            このツールの変数は「数値の加算・減算」しかできないから注意だよ～！<br>
-            変数に文字を代入して「名前変換機能」として使ったり、「クイズの解答をプレイヤーに入力させる」といった使い方はできないんだよね。
+            このツールの変数は「数値の加算・減算」しかできないから気を付けてくれ。<br>
+            変数に文字を代入して「名前変換機能」として使ったり、「クイズの解答をプレイヤーに入力させる」といった使い方はできないんだ。
           </div>
         </div>
       </div>
@@ -583,7 +583,7 @@
       <p>蓄積された変数の値に応じて物語を変化させる <code>@branch</code> コマンドには、作品のゲーム性に合わせて選べる<b>3つの分岐モード</b>があります。</p>
 
       <h3>パターン1：個別判定モード（<code>type:single</code>）</h3>
-      <p>特定のキャラクターの数値が「指定した値以上かどうか」を判定します。ヒロイン個別のルートに入ったかどうかを確認したい場合に最適です。</p>
+      <p>特定の変数の数値が「指定した値以上かどうか」を判定します。好感度によってキャラの個別ルートに分岐する場合などに最適です。</p>
 
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -592,11 +592,11 @@
       </div>
 
       <h3>パターン2：最多獲得判定モード（<code>type:max</code>）</h3>
-      <p>3人の中で<b>最も数値が高いキャラクターの個別エンディングへ自動的に分岐</b>します。三角関係やマルチキャラのノベルゲームに最適です。</p>
+      <p>3人の中で<b>最も数値が高い変数の個別ルートへ自動的に分岐</b>します。マルチキャラのノベルゲームに最適です。</p>
 
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
-        <pre><code># 最も好感度が高いキャラの各種エンド(A_route / B_route / C_route)へ自動分岐
+        <pre><code># 最も好感度が高いキャラの各種エンド（A_route / B_route / C_route）へ自動分岐
 # 全員の好感度が 0 以下の場合は normal_end へジャンプ
 @branch: type:max|else:normal_end</code></pre>
       </div>
@@ -607,12 +607,27 @@
       </div>
 
       <h3>パターン3：複合条件判定モード（<code>type:multi</code>）</h3>
-      <p>「体力(charaA)が10以上、かつ知力(charaC)が10以上」のような<b>複数条件を同時にクリアしているか</b>を判定します。隠しルートや育成・ステータス系のゲームに最適です。</p>
+      <p>「体力（charaA）が10以上、かつ知力（charaC）が10以上」のような<b>複数条件を同時にクリアしているか</b>を判定します。隠しルートや育成・ステータス系のゲームに最適です。</p>
 
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code># charaA が 10 以上 かつ charaC が 10 以上の条件を満たせば true_end へ
 @branch: type:multi|cond:charaA>=10,charaC>=10|target:true_end|else:normal_end</code></pre>
+      </div>
+      
+      <div class="chara-commentary">
+        <div class="chara-commentary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          梓のワンポイントアドバイス！
+        </div>
+        <div class="chat-row">
+          <div class="chat-avatar">
+            <img src="images/azusa.webp" alt="梓">
+          </div>
+          <div class="chat-bubble">
+            分岐のコマンドによく出てくる<code>true</code> は「その条件を満たしている 」って意味で、<code>else</code> は「その条件を満たしていない」って意味だよ！
+          </div>
+        </div>
       </div>
 
       <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
@@ -662,7 +677,7 @@ const FAVOR_NAME_MAP = {
   </div>
 
   <footer>
-    <p style="margin-top: 8px;">&copy; ノベルゲーム制作ツール All Rights Reserved.</p>
+    <p>&copy; Stoat Labo / okojo All Rights Reserved.</p>
   </footer>
 
   <script>

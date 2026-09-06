@@ -6,26 +6,35 @@
   <title>ノベルゲーム制作ツール</title>
   <style>
     :root {
-      --bg-outer: #050a14;
-      --bg-game: #0d1b2a;
-      --border-game: #1b263b;
-      --color-primary: #ffd166;
-      --color-primary-hover: #ffeea9;
-      --color-primary-text: #1d3557;
-      --color-secondary: #ffffff;
-      --color-secondary-border: #1d3557;
-      --color-secondary-text: #1d3557;
-      --color-active: #e63946;
-      --msg-box-bg: rgba(255, 255, 255, 0.92);
-      --msg-box-border: #1d3557;
-      --msg-speaker-text: #1d3557;
-      --msg-body-text: #2b2d42;
-      --modal-bg: rgba(13, 27, 42, 0.95);
-      --modal-card-bg: #ffffff;
-      --modal-card-border: #457b9d;
-      --modal-btn-bg: #457b9d;
-      --modal-btn-hover: #1d3557;
-      --text-light: #ffffff;
+      /* ベース背景色 */
+      --bg-outer: #050a14;               /* 画面外側の背景色 */
+      --bg-game: #0d1b2a;                /* ゲーム画面・モーダル背景色 */
+      --border-game: #1b263b;            /* ゲーム画面枠線 */
+
+      /* メインテーマカラー（ボタン・アクセント） */
+      --color-primary: #ffd166;        /* 主ボタン背景・強調表示 */
+      --color-primary-hover: #ffeea9;  /* 主ボタンホバー時 */
+      --color-primary-text: #1d3557;   /* 主ボタン・好感度枠のテキスト色 */
+
+      /* サブボタン・システムUI */
+      --color-secondary: #ffffff;        /* システムボタン背景 */
+      --color-secondary-border: #1d3557; /* システムボタン枠線 */
+      --color-secondary-text: #1d3557;   /* システムボタンテキスト色 */
+      --color-active: #e63946;           /* AUTO/SKIP有効時ハイライト色 */
+
+      /* メッセージウィンドウ */
+      --msg-box-bg: rgba(255, 255, 255, 0.92); /* メッセージ枠背景 */
+      --msg-box-border: #1d3557;        /* メッセージ枠線 */
+      --msg-speaker-text: #1d3557;      /* 話者名テキスト色 */
+      --msg-body-text: #2b2d42;          /* 本文テキスト色 */
+
+      /* セーブ・ロード・バックログ（モーダル画面） */
+      --modal-bg: rgba(13, 27, 42, 0.95); /* モーダル全体の背景 */
+      --modal-card-bg: #ffffff;          /* セーブスロット背景色 */
+      --modal-card-border: #457b9d;      /* セーブスロット枠線 */
+      --modal-btn-bg: #457b9d;           /* 閉じるボタン背景色 */
+      --modal-btn-hover: #1d3557;        /* 閉じるボタンホバー時 */
+      --text-light: #ffffff;             /* モーダル用基本文字色 */
     }
 
     html, body {
@@ -84,13 +93,14 @@
       pointer-events: auto;
     }
 
+    /* タイトル画面レイヤー */
     #title-screen {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('images/bg01.webp');
+      background-image: url('images/bg01.webp'); /* ←ここを変更してください */
       background-size: cover;
       background-position: center;
       display: flex;
@@ -409,7 +419,7 @@
       background: var(--modal-btn-hover);
     }
 
-    /* 立ち絵エリア（最大3人） */
+    /* 立ち絵レイヤー（3人対応） */
     #character-layer {
       position: absolute;
       top: 0;
@@ -514,6 +524,7 @@
   <div id="game-container">
     <div id="fade-overlay"></div>
 
+    <!-- タイトル画面 -->
     <div id="title-screen">
       <h1>ノベルゲームタイトル</h1>
       <button id="start-btn" class="menu-btn">NEW GAME</button>
@@ -528,6 +539,7 @@
       <div id="thanks-text">Thanks for playing!</div>
     </div>
 
+    <!-- 好感度・ステータス表示 -->
     <div id="favor-display"></div>
 
     <div id="system-menu">
@@ -605,6 +617,7 @@
   window.addEventListener("resize", resizeGame);
   window.addEventListener("orientationchange", resizeGame);
 
+  // 共通定数設定
   const TITLE_BGM_URL = "sound/sound01.mp3";
   const ENDING_BGM_URL = "sound/sound01.mp3";
   const SOUND_EFFECTS = {
@@ -613,12 +626,14 @@
     select: "sound/select.mp3"
   };
 
+  // 画面表示用ラベルのマッピング設定
   const FAVOR_NAME_MAP = {
     charaA: "ほのか",
     charaB: "裕也",
     charaC: "三月"
   };
 
+  // スタッフロールデータ
   const creditsData = [
     {
       img: "images/bg01.webp",
@@ -693,7 +708,8 @@
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
     const parsedScenario = [];
     labelMap = {};
-    let currentScene = {};
+    let pendingCommands = [];
+    let currentScene = { commands: [] };
     let sceneIdCounter = 0;
 
     lines.forEach(line => {
@@ -712,40 +728,27 @@
           command = line.slice(1).trim();
         }
 
-        const targetObj = parsedScenario.length > 0 && Object.keys(currentScene).length === 0 
-          ? parsedScenario[parsedScenario.length - 1] 
-          : currentScene;
+        const cmdObj = { command, param };
 
         if (command === "label") {
           labelMap[param] = sceneIdCounter;
-          currentScene.label = param;
-        }
-        else if (command === "bg") currentScene.bg = param;
-        else if (command === "bgm") currentScene.bgm = param;
-        else if (command === "se") currentScene.se = param;
-        else if (command === "character") {
-          currentScene.characterCmd = param;
-        }
-        else if (command === "fade") currentScene.fade = (param === "true");
-        else if (command === "startCredits") currentScene.startCredits = (param === "true");
-        else if (command === "jump") targetObj.jumpTarget = param;
-        else if (command === "branch") {
-          targetObj.isBranch = true;
+          cmdObj.label = param;
+        } else if (command === "branch") {
+          cmdObj.isBranch = true;
           const parts = param.split("|");
           parts.forEach(p => {
-            if (p.startsWith("type:")) targetObj.branchType = p.replace("type:", "").trim();
-            if (p.startsWith("chara:")) targetObj.branchChara = p.replace("chara:", "").trim();
-            if (p.startsWith("border:")) targetObj.branchBorder = parseInt(p.replace("border:", "").trim());
-            if (p.startsWith("target:")) targetObj.branchTarget = p.replace("target:", "").trim();
-            if (p.startsWith("else:")) targetObj.elseTarget = p.replace("else:", "").trim();
-            if (p.startsWith("cond:")) targetObj.branchCond = p.replace("cond:", "").trim();
-            if (p.startsWith("happy:")) targetObj.happyTarget = p.replace("happy:", "").trim();
-            if (p.startsWith("normal:")) targetObj.normalTarget = p.replace("normal:", "").trim();
+            if (p.startsWith("type:")) cmdObj.branchType = p.replace("type:", "").trim();
+            if (p.startsWith("chara:")) cmdObj.branchChara = p.replace("chara:", "").trim();
+            if (p.startsWith("border:")) cmdObj.branchBorder = parseInt(p.replace("border:", "").trim());
+            if (p.startsWith("target:")) cmdObj.branchTarget = p.replace("target:", "").trim();
+            if (p.startsWith("else:")) cmdObj.elseTarget = p.replace("else:", "").trim();
+            if (p.startsWith("cond:")) cmdObj.branchCond = p.replace("cond:", "").trim();
+            if (p.startsWith("happy:")) cmdObj.happyTarget = p.replace("happy:", "").trim();
+            if (p.startsWith("normal:")) cmdObj.normalTarget = p.replace("normal:", "").trim();
           });
-        }
-        else if (command === "choice") {
+        } else if (command === "choice") {
           const choiceItems = param.split("/");
-          targetObj.choices = choiceItems.map(item => {
+          cmdObj.choices = choiceItems.map(item => {
             const parts = item.split("|").map(s => s.trim());
             const text = parts[0];
             let nextTarget = null, favorTarget = "charaA", favorChange = 0;
@@ -766,6 +769,8 @@
             return { text, nextTarget, favorTarget, favorChange };
           });
         }
+
+        pendingCommands.push(cmdObj);
         return;
       }
 
@@ -778,23 +783,26 @@
         currentScene.text = line;
       }
 
+      currentScene.commands = [...pendingCommands];
+      pendingCommands = [];
+
       currentScene.id = sceneIdCounter;
       currentScene.next = sceneIdCounter + 1;
       parsedScenario.push(currentScene);
       sceneIdCounter++;
-      currentScene = {};
+      currentScene = { commands: [] };
     });
 
     parsedScenario.forEach(scene => {
-      if (scene.choices) {
-        scene.choices.forEach(choice => {
-          if (choice.nextTarget) {
-            choice.next = (labelMap[choice.nextTarget] !== undefined) ? labelMap[choice.nextTarget] : parseInt(choice.nextTarget);
-          }
-        });
-      }
-      if (scene.happyTarget && labelMap[scene.happyTarget] !== undefined) scene.happyNext = labelMap[scene.happyTarget];
-      if (scene.normalTarget && labelMap[scene.normalTarget] !== undefined) scene.normalNext = labelMap[scene.normalTarget];
+      scene.commands.forEach(cmd => {
+        if (cmd.choices) {
+          cmd.choices.forEach(choice => {
+            if (choice.nextTarget) {
+              choice.next = (labelMap[choice.nextTarget] !== undefined) ? labelMap[choice.nextTarget] : parseInt(choice.nextTarget);
+            }
+          });
+        }
+      });
     });
 
     return parsedScenario;
@@ -1150,7 +1158,6 @@
     }, fadeDuration);
   }
 
-  // 3人同時配置対応のキャラ描画制御関数
   function updateCharacterDisplay(param) {
     if (param === undefined) return;
 
@@ -1180,7 +1187,6 @@
 
     if (!["left", "center", "right"].includes(pos)) pos = "center";
 
-    // 同じキャラ画像が他スロットにある場合は事前に消去（移動演出用）
     ["left", "center", "right"].forEach(p => {
       if (p !== pos && activeCharacters[p] === imgSrc) {
         activeCharacters[p] = "";
@@ -1197,59 +1203,61 @@
 
   function updateSceneElements(scene) {
     currentSceneId = scene.id;
-
-    if (scene.bg !== undefined) {
-      if (scene.bg) {
-        gameContainerEl.style.backgroundImage = `url('${scene.bg}')`;
-      } else {
-        gameContainerEl.style.backgroundImage = "none";
-      }
-    }
-
-    if (scene.characterCmd !== undefined) {
-      updateCharacterDisplay(scene.characterCmd);
-    }
-
-    if (scene.bgm !== undefined) {
-      playBgm(scene.bgm);
-    }
-
-    if (scene.se) {
-      playSe(scene.se, 0.5);
-    }
-
     speakerNameEl.textContent = scene.speaker;
     choiceContainerEl.innerHTML = "";
 
-    typeWriter(scene.speaker, scene.text);
+    if (scene.commands && scene.commands.length > 0) {
+      scene.commands.forEach(cmd => {
+        const command = cmd.command;
+        const param = cmd.param;
 
-    if (scene.choices) {
-      stopAutoSkip();
-      scene.choices.forEach(choice => {
-        const button = document.createElement("button");
-        button.className = "choice-btn";
-        button.textContent = choice.text;
-        button.onclick = (e) => {
-          e.stopPropagation();
-          playSe(SOUND_EFFECTS.select);
-
-          if (choice.favorChange !== undefined) {
-            const target = choice.favorTarget || "charaA";
-            if (typeof favorability !== "object" || favorability === null) {
-              favorability = createInitialFavorability();
-            }
-            if (favorability[target] === undefined) {
-              favorability[target] = 0;
-            }
-            favorability[target] += choice.favorChange;
-            updateFavorDisplay();
+        if (command === "bg") {
+          if (param) {
+            gameContainerEl.style.backgroundImage = `url('${param}')`;
+          } else {
+            gameContainerEl.style.backgroundImage = "none";
           }
+        }
+        else if (command === "character") {
+          updateCharacterDisplay(param);
+        }
+        else if (command === "bgm") {
+          playBgm(param);
+        }
+        else if (command === "se") {
+          playSe(param, 0.5);
+        }
+        else if (cmd.choices) {
+          stopAutoSkip();
+          cmd.choices.forEach(choice => {
+            const button = document.createElement("button");
+            button.className = "choice-btn";
+            button.textContent = choice.text;
+            button.onclick = (e) => {
+              e.stopPropagation();
+              playSe(SOUND_EFFECTS.select);
 
-          renderScene(choice.next);
-        };
-        choiceContainerEl.appendChild(button);
+              if (choice.favorChange !== undefined) {
+                const target = choice.favorTarget || "charaA";
+                if (typeof favorability !== "object" || favorability === null) {
+                  favorability = createInitialFavorability();
+                }
+                if (favorability[target] === undefined) {
+                  favorability[target] = 0;
+                }
+                favorability[target] += choice.favorChange;
+                updateFavorDisplay();
+              }
+
+              renderScene(choice.next);
+            };
+            choiceContainerEl.appendChild(button);
+          });
+        }
       });
     }
+
+    typeWriter(scene.speaker, scene.text);
   }
 
   function renderScene(sceneId) {
@@ -1265,7 +1273,8 @@
 
     markSceneAsRead(scene.id);
 
-    const useFade = scene.fade && !isSkipMode;
+    const hasFade = scene.commands && scene.commands.some(c => c.command === "fade" && c.param === "true");
+    const useFade = hasFade && !isSkipMode;
 
     if (useFade) {
       isFading = true;
@@ -1308,6 +1317,7 @@
           favorText = data.favorability ?? 0;
         }
 
+        <!-- セーブ・ロード画面に文字を表示する -->
         previewEl.textContent = `${data.speaker}: ${shortText} (${favorText})`;
         dateEl.textContent = data.savedAt;
       } else {
@@ -1410,84 +1420,89 @@
   function advanceStory() {
     clearTimeout(autoTimer);
     const currentScene = scenario.find(s => s.id === currentSceneId);
-    
-    if (currentScene && currentScene.startCredits) {
-      playSe(SOUND_EFFECTS.click);
-      startCredits();
-      return;
-    }
+    if (!currentScene) return;
 
-    if (currentScene && currentScene.jumpTarget) {
-      if (labelMap[currentScene.jumpTarget] !== undefined) {
-        renderScene(labelMap[currentScene.jumpTarget]);
-        return;
-      }
-    }
-
-    if (currentScene && currentScene.isBranch) {
-      playSe(SOUND_EFFECTS.click);
-
-      const branchType = currentScene.branchType || "single";
-      const a = (typeof favorability === "object" && favorability !== null) ? (favorability.charaA || 0) : 0;
-      const b = (typeof favorability === "object" && favorability !== null) ? (favorability.charaB || 0) : 0;
-      const c = (typeof favorability === "object" && favorability !== null) ? (favorability.charaC || 0) : 0;
-
-      if (branchType === "single") {
-        const targetChara = currentScene.branchChara || "charaA";
-        const border = (currentScene.branchBorder !== undefined) ? currentScene.branchBorder : 10;
-        const currentVal = (typeof favorability === "object" && favorability !== null) ? (favorability[targetChara] || 0) : 0;
-
-        if (currentVal >= border) {
-          const targetLabel = currentScene.branchTarget || currentScene.happyTarget;
-          if (targetLabel && labelMap[targetLabel] !== undefined) {
-            renderScene(labelMap[targetLabel]);
-            return;
-          }
-        }
-        
-        const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
-        if (elseLabel && labelMap[elseLabel] !== undefined) {
-          renderScene(labelMap[elseLabel]);
-        } else {
-          renderScene(currentScene.normalNext !== undefined ? currentScene.normalNext : 5);
-        }
-        return;
-      }
-      else if (branchType === "max") {
-        const maxFavor = Math.max(a, b, c);
-
-        if (maxFavor <= 0) {
-          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
-          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+    if (currentScene.commands) {
+      for (const cmd of currentScene.commands) {
+        if (cmd.command === "startCredits" && cmd.param === "true") {
+          playSe(SOUND_EFFECTS.click);
+          startCredits();
           return;
         }
 
-        if (maxFavor === a && labelMap["A_route"] !== undefined) {
-          renderScene(labelMap["A_route"]);
-        } else if (maxFavor === b && labelMap["B_route"] !== undefined) {
-          renderScene(labelMap["B_route"]);
-        } else if (maxFavor === c && labelMap["C_route"] !== undefined) {
-          renderScene(labelMap["C_route"]);
-        } else {
-          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
-          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+        if (cmd.command === "jump" && cmd.param) {
+          if (labelMap[cmd.param] !== undefined) {
+            renderScene(labelMap[cmd.param]);
+            return;
+          }
         }
-        return;
-      }
-      else if (branchType === "multi") {
-        const isPassed = checkConditionString(currentScene.branchCond);
 
-        if (isPassed && currentScene.branchTarget && labelMap[currentScene.branchTarget] !== undefined) {
-          renderScene(labelMap[currentScene.branchTarget]);
-        } else {
-          const elseLabel = currentScene.elseTarget || currentScene.normalTarget;
-          renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.normalNext);
+        if (cmd.isBranch) {
+          playSe(SOUND_EFFECTS.click);
+
+          const branchType = cmd.branchType || "single";
+          const a = (typeof favorability === "object" && favorability !== null) ? (favorability.charaA || 0) : 0;
+          const b = (typeof favorability === "object" && favorability !== null) ? (favorability.charaB || 0) : 0;
+          const c = (typeof favorability === "object" && favorability !== null) ? (favorability.charaC || 0) : 0;
+
+          if (branchType === "single") {
+            const targetChara = cmd.branchChara || "charaA";
+            const border = (cmd.branchBorder !== undefined) ? cmd.branchBorder : 10;
+            const currentVal = (typeof favorability === "object" && favorability !== null) ? (favorability[targetChara] || 0) : 0;
+
+            if (currentVal >= border) {
+              const targetLabel = cmd.branchTarget || cmd.happyTarget;
+              if (targetLabel && labelMap[targetLabel] !== undefined) {
+                renderScene(labelMap[targetLabel]);
+                return;
+              }
+            }
+            
+            const elseLabel = cmd.elseTarget || cmd.normalTarget;
+            if (elseLabel && labelMap[elseLabel] !== undefined) {
+              renderScene(labelMap[elseLabel]);
+            } else {
+              renderScene(currentScene.next !== undefined ? currentScene.next : 0);
+            }
+            return;
+          }
+          else if (branchType === "max") {
+            const maxFavor = Math.max(a, b, c);
+
+            if (maxFavor <= 0) {
+              const elseLabel = cmd.elseTarget || cmd.normalTarget;
+              renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.next);
+              return;
+            }
+
+            if (maxFavor === a && labelMap["A_route"] !== undefined) {
+              renderScene(labelMap["A_route"]);
+            } else if (maxFavor === b && labelMap["B_route"] !== undefined) {
+              renderScene(labelMap["B_route"]);
+            } else if (maxFavor === c && labelMap["C_route"] !== undefined) {
+              renderScene(labelMap["C_route"]);
+            } else {
+              const elseLabel = cmd.elseTarget || cmd.normalTarget;
+              renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.next);
+            }
+            return;
+          }
+          else if (branchType === "multi") {
+            const isPassed = checkConditionString(cmd.branchCond);
+
+            if (isPassed && cmd.branchTarget && labelMap[cmd.branchTarget] !== undefined) {
+              renderScene(labelMap[cmd.branchTarget]);
+            } else {
+              const elseLabel = cmd.elseTarget || cmd.normalTarget;
+              renderScene(elseLabel && labelMap[elseLabel] !== undefined ? labelMap[elseLabel] : currentScene.next);
+            }
+            return;
+          }
         }
-        return;
       }
     }
 
-    if (currentScene && currentScene.next !== undefined) {
+    if (currentScene.next !== undefined) {
       playSe(SOUND_EFFECTS.click);
       renderScene(currentScene.next);
     }

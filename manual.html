@@ -339,7 +339,6 @@
     /* 画像配置用ダミースペース */
     .image-placeholder {
       width: 100%;
-      height: 240px;
       background-color: #f8fafc;
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
@@ -561,9 +560,7 @@
         <p>動作確認・運用の際は、広告非表示のサーバーや、エディタ（VS Code や PhoenixCode）のローカルプレビュー機能のご利用を推奨いたします。</p>
       </div>
 
-      <div class="image-placeholder">
-        【サンプル画像スペース 1：完成ゲーム画面のキャプチャ】
-      </div>
+      <img src="images/sample01.webp" alt="完成ゲーム画面のキャプチャ" class="image-placeholder">
 
       <h3>収録ファイルとフォルダ構成</h3>
       <ul>
@@ -571,7 +568,6 @@
         <li><code>editor.html</code> : プレビュー付きシナリオエディタ（制作・編集用）</li>
         <li><code>debug.html</code> : 変数管理＆デバッグツール（テストプレイ・動作確認用）</li>
         <li><code>scenario.txt</code> : ゲームのシナリオファイル（テキスト編集で作品を作ります）</li>
-        <li><code>Readme.txt</code> : 説明書ファイル</li>
       </ul>
       
         <div class="chara-commentary">
@@ -604,9 +600,7 @@
 
       <h3>専用エディタ（editor.html）の特長・機能</h3>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース 2：editor.htmlの画面キャプチャ】
-      </div>
+      <img src="images/sample02.webp" alt="editor.htmlの画面キャプチャ" class="image-placeholder">
       
       <ul>
         <li><span class="badge">画面上部（ツールバー）</span> ボタンをクリックすることで、コマンド名やよく使う値をワンタップで入力できます。</li>
@@ -619,10 +613,8 @@
       <h3>変数管理＆デバッグツール（debug.html）の機能と使い方</h3>
       <p>ゲーム本体（index.html）と並べて開くことで、ブラウザ間のリアルタイム通信機能を通じてゲームの状態を外部から確認・操作できます。シナリオ後半のテストや分岐条件のチェックに活用してください。</p>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース 2：debug.html の画面キャプチャ】
-      </div>
-
+      <img src="images/sample03.webp" alt="debug.html の画面キャプチャ" class="image-placeholder">
+      
       <ul>
         <li><span class="badge">変数のパラメータ調整</span>
           変数のパラメータ（<code>charaA</code>、<code>charaB</code>、<code>charaC</code>）の現在値をリアルタイムに監視できます。数値入力欄から直接任意の値を設定し「反映」を押すか、「全パラメータを一括変更」でテストしたい数値へ即座に変更できます。
@@ -696,7 +688,7 @@
             <img src="images/mitsuki.webp" alt="三月">
           </div>
           <div class="chat-bubble">
-            このゲームのプログラムは、<strong>『@から始まるコマンド行の設定を、次に現れるテキスト行の属性としてすべて蓄積する』</strong>という仕様になってるの。<br>だから@から始まるコマンド行の直後にテキスト行（セリフや地の文）がないと、プログラムが混乱して反映されなくなっちゃうから気を付けてね。
+            このツールのプログラムは、<strong>『@から始まるコマンド行の設定を、次に現れるテキスト行の属性としてすべて蓄積する』</strong>という仕様になってるの。<br>だから@から始まるコマンド行の直後にテキスト行（セリフや地の文）がないと、プログラムが混乱して反映されなくなっちゃうから気を付けてね。
           </div>
         </div>
       </div>
@@ -759,16 +751,16 @@
               <td>クリックを挟まず、指定したラベルの場所へ直ちに自動ジャンプします。<br>共通ルートから個別ルートへの移動や、回想処理などに活用できます。（例：<code>@jump: scene2</code>）</td>
             </tr>
             <tr>
-              <td>選択肢表示・好感度加算</td>
+              <td>選択肢表示・変数増減</td>
               <td><code>@choice: ボタン文章|next:ラベル名|favor:キャラ名:数値 / ...</code></td>
-              <td>選択肢ボタンを表示します。「<code>/</code>」で区切ることで複数の選択肢を作れます。<br>「<code>favor:キャラ名:数値</code>」で対象キャラ（<code>charaA</code>/<code>charaB</code>/<code>charaC</code>）の好感度を加減算します。<br>（例：<code>@choice: ほのかと行く|next:route_a|favor:charaA:10 / 裕也と行く|next:route_b|favor:charaB:10</code>）</td>
+              <td>選択肢ボタンを表示します。「<code>/</code>」で区切ることで複数の選択肢を作れます。<br>「<code>favor:キャラ名:数値</code>」で対象（<code>charaA</code>/<code>charaB</code>/<code>charaC</code>）の変数を加減算します。<br>（例：<code>@choice: ほのかと行く|next:route_a|favor:charaA:10 / 裕也と行く|next:route_b|favor:charaB:10</code>）</td>
             </tr>
             <tr>
               <td>変数による自動分岐</td>
               <td><code>@branch: type:[モード]|...</code></td>
               <td>シナリオに合わせて3通りの分岐モードを使い分けられます。<br>
-              ・<b>個別判定</b>: <code>type:single|chara:charaA|border:10|target:happy_end|else:normal_end</code>（指定キャラの数値判定）<br>
-              ・<b>最多判定</b>: <code>type:max|else:normal_end</code>（一番数値が高いキャラのエンディングへ自動分岐）<br>
+              ・<b>個別判定</b>: <code>type:single|chara:charaA|border:10|target:happy_end|else:normal_end</code>（指定した変数の数値判定）<br>
+              ・<b>最多判定</b>: <code>type:max|else:normal_end</code>（一番数値が高い変数のルートへ自動分岐）<br>
               ・<b>複合判定</b>: <code>type:multi|cond:charaA>=10,charaC>=10|target:true_end|else:normal_end</code>（複数条件判定）</td>
             </tr>
             <tr>
@@ -783,7 +775,7 @@
         <div class="chara-commentary">
         <div class="chara-commentary-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          亮のワンポイントアドバイス
+          亮のワンポイントアドバイス！
         </div>
         
         <div class="chat-row">
@@ -802,10 +794,8 @@
     <section id="sec5">
       <h2>5. プレイヤーが使えるシステム機能</h2>
       <p>ゲームのプレイ中、画面右上（スマホは上部）のメニューから以下の機能が使えます。</p>
-
-      <div class="image-placeholder">
-        【サンプル画像スペース 3：ゲーム内システムメニューやバックログ画面のキャプチャ】
-      </div>
+      
+      <img src="images/sample04.webp" alt="バックログ画面のキャプチャ" class="image-placeholder">
 
       <ul>
         <li><b>AUTO</b> : 文章を自動で読み進めます。（AキーでもON/OFF可能）</li>
@@ -833,7 +823,7 @@
             <img src="images/azusa.webp" alt="梓">
           </div>
           <div class="chat-bubble">
-            「index.html」は「scenario.txt」とは違って独自タグは使用していないから、<strong>専用エディタよりも「VS Code」や「Phoenix Code」のようなコードエディタのほうが編集しやすいよ～！</strong><br>
+            「index.html」は「scenario.txt」とは違って独自タグは使用していないから、<strong>専用エディタよりも「VS Code」や「Phoenix Code」のようなコードエディタのほうが編集しやすいよ！</strong><br>
             コードの中から編集したい部分を探すのは大変だから、こういったエディタに備わっている検索機能を活用しちゃってね！
           </div>
         </div>
@@ -890,7 +880,7 @@ roles: [
         <button class="code-copy-btn">コピー</button>
         <pre><code>// 共通定数設定
 const TITLE_BGM_URL = "sound/sound01.mp3";
-const ENDING_BGM_URL = "sound/ending.mp3";
+const ENDING_BGM_URL = "sound/sound01.mp3";
 const SOUND_EFFECTS = {
   click: "sound/click.mp3",
   type: "sound/type.mp3",
@@ -898,7 +888,7 @@ const SOUND_EFFECTS = {
 };</code></pre>
       </div>
       
-      <h3>好感度(変数)を非表示にする</h3>
+      <h3>好感度（変数）を非表示にする</h3>
       <p>画面左上に表示される好感度（変数）を非表示にしたい場合は以下の部分を削除してください。</p>
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -956,22 +946,36 @@ const SOUND_EFFECTS = {
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
         <pre><code>:root {
-  /* ベース背景色 */
-  --bg-outer: #050a14;               /* 画面外側の背景色 */
-  --bg-game: #0d1b2a;                /* ゲーム画面・モーダル背景色 */
-  --border-game: #1b263b;            /* ゲーム画面枠線 */
+      /* ベース背景色 */
+      --bg-outer: #050a14;               /* 画面外側の背景色 */
+      --bg-game: #0d1b2a;                /* ゲーム画面・モーダル背景色 */
+      --border-game: #1b263b;            /* ゲーム画面枠線 */
 
-  /* メインテーマカラー（ボタン・アクセント） */
-  --color-primary: #ffd166;        /* ボタン背景・強調表示 */
-  --color-primary-hover: #ffeea9;  /* ボタンホバー時 */
-  --color-primary-text: #1d3557;   /* 主に黄系背景上のテキスト色 */
+      /* メインテーマカラー（ボタン・アクセント） */
+      --color-primary: #ffd166;        /* 主ボタン背景・強調表示 */
+      --color-primary-hover: #ffeea9;  /* 主ボタンホバー時 */
+      --color-primary-text: #1d3557;   /* 主ボタン・好感度枠のテキスト色 */
 
-  /* メッセージウィンドウ */
-  --msg-box-bg: rgba(255, 255, 255, 0.92); /* メッセージ枠背景 */
-  --msg-box-border: #1d3557;        /* メッセージ枠線 */
-  --msg-speaker-text: #1d3557;      /* 話者名テキスト色 */
-  --msg-body-text: #2b2d42;          /* 本文テキスト色 */
-}</code></pre>
+      /* サブボタン・システムUI */
+      --color-secondary: #ffffff;        /* システムボタン背景 */
+      --color-secondary-border: #1d3557; /* システムボタン枠線 */
+      --color-secondary-text: #1d3557;   /* システムボタンテキスト色 */
+      --color-active: #e63946;           /* AUTO/SKIP有効時ハイライト色 */
+
+      /* メッセージウィンドウ */
+      --msg-box-bg: rgba(255, 255, 255, 0.92); /* メッセージ枠背景 */
+      --msg-box-border: #1d3557;        /* メッセージ枠線 */
+      --msg-speaker-text: #1d3557;      /* 話者名テキスト色 */
+      --msg-body-text: #2b2d42;          /* 本文テキスト色 */
+
+      /* セーブ・ロード・バックログ（モーダル画面） */
+      --modal-bg: rgba(13, 27, 42, 0.95); /* モーダル全体の背景 */
+      --modal-card-bg: #ffffff;          /* セーブスロット背景色 */
+      --modal-card-border: #457b9d;      /* セーブスロット枠線 */
+      --modal-btn-bg: #457b9d;           /* 閉じるボタン背景色 */
+      --modal-btn-hover: #1d3557;        /* 閉じるボタンホバー時 */
+      --text-light: #ffffff;             /* モーダル用基本文字色 */
+    }</code></pre>
       </div>
 
       <h3>カラーコードの設定例（テーマ別サンプル）</h3>
@@ -979,9 +983,7 @@ const SOUND_EFFECTS = {
 
       <h4>1. ダーク・サイバー風（クール・SF系）</h4>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース】
-      </div>
+      <img src="images/sample05.webp" alt="ダーク・サイバー風（クール・SF系）のキャプチャ" class="image-placeholder">
       
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -1009,11 +1011,9 @@ const SOUND_EFFECTS = {
 }</code></pre>
       </div>
 
-      <h4>2. モノクロ・シック風（ミステリー・シリアス・ホラー系）</h4>
+      <h4>2. モノクロ・シック風（ミステリー・シリアス系）</h4>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース】
-      </div>
+      <img src="images/sample06.webp" alt="モノクロ・シック風（ミステリー・シリアス系）のキャプチャ" class="image-placeholder">
       
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -1043,9 +1043,7 @@ const SOUND_EFFECTS = {
 
       <h4>3. 和風・レトロ風（時代物・伝奇系）</h4>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース】
-      </div>
+      <img src="images/sample07.webp" alt="和風・レトロ風（時代物・伝奇系）のキャプチャ" class="image-placeholder">
       
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -1075,9 +1073,7 @@ const SOUND_EFFECTS = {
 
       <h4>4. キュート・パステル風（恋愛・日常・ポップ系）</h4>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース】
-      </div>
+      <img src="images/sample08.webp" alt="キュート・パステル風（恋愛・日常・ポップ系）のキャプチャ" class="image-placeholder">
       
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -1105,11 +1101,9 @@ const SOUND_EFFECTS = {
 }</code></pre>
       </div>
 
-      <h4>5. ゴシック・ダークホラー風（サスペンス・伝奇・ダークファンタジー系）</h4>
+      <h4>5. ゴシック・ダークホラー風（サスペンス・ダークファンタジー系）</h4>
       
-      <div class="image-placeholder">
-        【サンプル画像スペース】
-      </div>
+      <img src="images/sample09.webp" alt="ゴシック・ダークホラー風（サスペンス・ダークファンタジー系）のキャプチャ" class="image-placeholder">
       
       <div class="code-block-wrapper">
         <button class="code-copy-btn">コピー</button>
@@ -1181,7 +1175,8 @@ const SOUND_EFFECTS = {
       <h3>ライセンス・利用規約</h3>
       <ul>
         <li>本ツールで制作したゲームは、個人サイトで公開したり、SNSで紹介するなど、個人的な用途において自由にご利用できます。</li>
-        <li>クレジット表記（作者名の記載）は任意ですが、していただけると大変励みになります！</li>
+        <li>本ツールで使用している画像および音楽はフリー素材をお借りしているものです。著作権は各制作者様に帰属します。</li>
+        <li>クレジット表記（ツールの制作者名の記載）は任意です。</li>
         
       </ul>
       <div class="back-to-top"><a href="#top">▲ 目次へ戻る</a></div>
@@ -1190,7 +1185,7 @@ const SOUND_EFFECTS = {
   </div>
 
   <footer>
-    <p style="margin-top: 8px;">&copy; ノベルゲーム制作ツール All Rights Reserved.</p>
+    <p>&copy; Stoat Labo / okojo All Rights Reserved.</p>
   </footer>
 
   <script>
