@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ノベルゲーム制作ツール</title>
+  <title>ノベルゲーム制作ツール | Stoat Labo</title>
   <style>
     :root {
       /* ベース背景色 */
@@ -628,9 +628,9 @@
 
   // 画面表示用ラベルのマッピング設定
   const FAVOR_NAME_MAP = {
-    charaA: "パワー",
-    charaB: "スタミナ",
-    charaC: "メンタル"
+    charaA: "ほのか",
+    charaB: "裕也",
+    charaC: "三月"
   };
 
   // スタッフロールデータ
@@ -650,7 +650,7 @@
     {
       img: "images/bg03.webp",
       roles: [
-        { role: "音楽・BGM", name: "こばっと / POLARIS PLUS" },
+        { role: "音楽・BGM", name: "魔王魂" },
       ]
     },
     {
@@ -1696,6 +1696,7 @@
     debugChannel.postMessage({
       type: 'STATE_UPDATE',
       favorability: favorability,
+      favorNameMap: FAVOR_NAME_MAP,
       currentSceneId: currentSceneId,
       currentSpeaker: speakerNameEl.textContent,
       currentText: fullText

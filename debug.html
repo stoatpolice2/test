@@ -143,8 +143,8 @@
   <script>
     const channel = new BroadcastChannel('novel_game_debug');
 
-    // 表示名マッピング（ゲーム側と同じものを用意）
-    const FAVOR_NAME_MAP = {
+    // 初期表示名マッピング（本体から受信するまでの仮のデータ）
+    let FAVOR_NAME_MAP = {
       charaA: "ほのか",
       charaB: "裕也",
       charaC: "三月"
@@ -157,6 +157,11 @@
     channel.onmessage = (event) => {
       const data = event.data;
       if (data.type === 'STATE_UPDATE') {
+        // 本体から名称マッピングが送られてきた場合は更新
+        if (data.favorNameMap) {
+          FAVOR_NAME_MAP = data.favorNameMap;
+        }
+
         renderFavorInputs(data.favorability);
         document.getElementById('scene-id-disp').textContent = data.currentSceneId;
         document.getElementById('speaker-disp').textContent = data.currentSpeaker ? `【${data.currentSpeaker}】` : '（話者なし）';
@@ -185,7 +190,7 @@
           row.className = 'chara-row';
           row.innerHTML = `
             <div class="chara-info">
-              <span class="chara-name">${displayName}</span>
+              <span class="chara-name" id="favor-label-${key}">${displayName}</span>
               <span class="chara-key">${key}</span>
             </div>
             <div class="input-group">
@@ -195,6 +200,12 @@
           `;
           container.appendChild(row);
         } else {
+          // すでに要素が存在する場合でも表示名を最新に上書きする
+          const labelEl = document.getElementById(`favor-label-${key}`);
+          if (labelEl) {
+            labelEl.textContent = displayName;
+          }
+
           const input = document.getElementById(`favor-input-${key}`);
           if (document.activeElement !== input) {
             input.value = val;
@@ -203,6 +214,7 @@
       }
     }
 
+    // （以下、setSingleFavorability や jumpToScene などは既存のまま変更なし）
     // 特定パラメータのみ変更
     function setSingleFavorability(targetKey) {
       const val = document.getElementById(`favor-input-${targetKey}`).value;
