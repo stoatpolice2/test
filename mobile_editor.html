@@ -3,33 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simple Page Editor</title>
+  <title>Mini Mobile Page Editor</title>
   <style>
     :root {
-      --bg: #f3f6fb;
-      --panel: #ffffff;
-      --panel-2: #eef3ff;
+      --bg: #edf2f8;
+      --panel: rgba(255,255,255,0.88);
+      --panel-strong: #ffffff;
+      --panel-soft: #f4f7fb;
       --text: #1f2937;
       --muted: #6b7280;
-      --line: #d8e0ef;
-      --accent: #3b82f6;
-      --accent-soft: rgba(59, 130, 246, 0.12);
-      --shadow: rgba(15, 23, 42, 0.12);
-      --success: #22c55e;
+      --line: #dfe7f3;
+      --accent: #5b7cff;
+      --accent-soft: rgba(91,124,255,0.12);
+      --shadow: rgba(15, 23, 42, 0.08);
+      --editor-bg: #f8fafc;
       --preview-bg: #ffffff;
     }
 
     body[data-theme="dark"] {
       --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #182235;
-      --text: #e5edf9;
-      --muted: #9aa9be;
-      --line: #2b3a52;
-      --accent: #60a5fa;
-      --accent-soft: rgba(96, 165, 250, 0.18);
-      --shadow: rgba(2, 6, 23, 0.45);
-      --success: #4ade80;
+      --panel: rgba(17,24,39,0.9);
+      --panel-strong: #111827;
+      --panel-soft: #172336;
+      --text: #edf3ff;
+      --muted: #a0aec0;
+      --line: #2d3b51;
+      --accent: #8aa7ff;
+      --accent-soft: rgba(138,167,255,0.14);
+      --shadow: rgba(2, 6, 23, 0.42);
+      --editor-bg: #101c2d;
       --preview-bg: #0b1220;
     }
 
@@ -45,7 +47,7 @@
     }
 
     body {
-      padding: 16px;
+      padding: 10px;
     }
 
     button, textarea {
@@ -55,86 +57,118 @@
     .app {
       max-width: 1400px;
       margin: 0 auto;
-      min-height: calc(100vh - 32px);
+      min-height: calc(100vh - 20px);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
+      padding: 8px 8px;
+      border-radius: 14px;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 12px 14px;
-      box-shadow: 0 10px 24px var(--shadow);
+      box-shadow: 0 8px 18px var(--shadow);
       position: sticky;
-      top: 0;
+      top: 8px;
       z-index: 10;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #7dd3fc);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(91,124,255,0.2);
+    }
+
+    .brand-name {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
     }
 
     .tabs {
-      display: inline-flex;
-      background: var(--panel-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1 1 auto;
+      gap: 4px;
+      padding: 3px;
+      background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 4px;
-      gap: 4px;
+      min-width: 0;
     }
 
     .tab {
       border: none;
       background: transparent;
       color: var(--muted);
-      padding: 8px 14px;
-      border-radius: 10px;
+      padding: 7px 10px;
+      border-radius: 9px;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
+      line-height: 1;
+      min-width: 72px;
       transition: all 0.2s ease;
-      min-width: 88px;
     }
 
     .tab.is-active {
       background: var(--accent-soft);
       color: var(--accent);
-      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.15);
+      box-shadow: inset 0 0 0 1px rgba(91,124,255,0.06);
     }
 
     .actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 4px;
+      flex: 0 0 auto;
     }
 
     .icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width: 32px;
+      height: 32px;
       border: 1px solid var(--line);
+      border-radius: 10px;
       background: transparent;
       color: var(--text);
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
+      user-select: none;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
     .icon-btn:hover {
       transform: translateY(-1px);
       border-color: var(--accent);
-    }
-
-    .icon-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
     }
 
     .icon-btn.primary {
@@ -143,49 +177,78 @@
       color: var(--accent);
     }
 
+    .icon-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      border-color: var(--line);
+    }
+
     .panels {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr);
-      gap: 12px;
+      display: block;
       flex: 1;
       min-height: 0;
     }
 
     .panel {
+      display: none;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 10px 24px var(--shadow);
+      border-radius: 16px;
+      box-shadow: 0 8px 18px var(--shadow);
       overflow: hidden;
       min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .header-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .editor-panel {
       display: flex;
       flex-direction: column;
     }
 
-    .panel-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--line);
-      background: var(--panel-2);
-      color: var(--muted);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      font-size: 0.95rem;
-    }
-
-    .editor-panel {
-      min-height: 320px;
+    .editor-wrap {
+      background: var(--editor-bg);
+      flex: 1;
+      min-height: 0;
     }
 
     textarea {
-      flex: 1;
       width: 100%;
-      border: none;
+      height: 100%;
+      min-height: 360px;
       resize: none;
+      border: none;
       background: transparent;
       color: var(--text);
-      padding: 16px;
-      font-size: 0.96rem;
-      line-height: 1.55;
+      padding: 12px 12px 14px;
+      font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
       outline: none;
       tab-size: 2;
     }
@@ -194,66 +257,60 @@
       color: var(--muted);
     }
 
-    .preview-panel {
-      min-height: 320px;
-    }
-
     .preview-shell {
-      flex: 1;
       background: var(--preview-bg);
-      padding: 16px;
+      padding: 8px;
       min-height: 0;
     }
 
     iframe {
+      display: block;
       width: 100%;
       height: 100%;
-      min-height: 420px;
+      min-height: 380px;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 12px;
       background: white;
     }
 
-    @media (max-width: 899px) {
-      body {
-        padding: 12px;
-      }
+    .app[data-active-tab="editor"] .editor-panel {
+      display: flex;
+    }
 
-      .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .tabs {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .actions {
-        justify-content: flex-end;
-      }
-
-      .panels {
-        display: block;
-      }
-
-      .panel {
-        display: none;
-      }
-
-      .app[data-active-tab="editor"] .editor-panel {
-        display: flex;
-      }
-
-      .app[data-active-tab="preview"] .preview-panel {
-        display: flex;
-      }
+    .app[data-active-tab="preview"] .preview-panel {
+      display: flex;
     }
 
     @media (min-width: 900px) {
-      .app[data-active-tab="editor"] .preview-panel,
-      .app[data-active-tab="preview"] .editor-panel {
-        opacity: 1;
+      body {
+        padding: 14px;
+      }
+
+      .panel {
+        display: flex !important;
+      }
+
+      .app[data-active-tab="editor"] .editor-panel,
+      .app[data-active-tab="preview"] .preview-panel {
+        display: flex;
+      }
+
+      .panels {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(0, 1.38fr);
+        gap: 10px;
+      }
+
+      .editor-panel, .preview-panel {
+        flex-direction: column;
+      }
+
+      textarea {
+        min-height: 500px;
+      }
+
+      iframe {
+        min-height: 500px;
       }
     }
   </style>
@@ -261,12 +318,17 @@
 <body data-theme="light">
   <div class="app" id="app" data-active-tab="editor">
     <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="brand">E</div>
+        <div class="brand-name">Edit</div>
+      </div>
+
       <div class="tabs" role="tablist" aria-label="画面切替">
-        <button class="tab is-active" data-tab="editor" role="tab" aria-selected="true" aria-controls="editor-panel">
-          ✍️ 編集
+        <button class="tab is-active" data-tab="editor" role="tab" aria-selected="true">
+          編集
         </button>
-        <button class="tab" data-tab="preview" role="tab" aria-selected="false" aria-controls="preview-panel">
-          🔍 プレビュー
+        <button class="tab" data-tab="preview" role="tab" aria-selected="false">
+          プレビュー
         </button>
       </div>
 
@@ -280,12 +342,20 @@
 
     <main class="panels">
       <section class="panel editor-panel" id="editor-panel" aria-label="編集画面">
-        <div class="panel-header">HTML / CSS / JS</div>
-        <textarea id="editor" spellcheck="false" aria-label="コード入力欄" placeholder="ここに既存コードを貼り付けてください"></textarea>
+        <div class="panel-header">
+          <span>HTML / CSS / JS</span>
+          <span class="header-tag" id="statusTag">編集中</span>
+        </div>
+        <div class="editor-wrap">
+          <textarea id="editor" spellcheck="false" aria-label="コード入力欄" placeholder="既存のHTML/CSS/JSを貼り付けてください"></textarea>
+        </div>
       </section>
 
       <section class="panel preview-panel" id="preview-panel" aria-label="プレビュー画面">
-        <div class="panel-header">プレビュー</div>
+        <div class="panel-header">
+          <span>プレビュー</span>
+          <span class="header-tag">Live</span>
+        </div>
         <div class="preview-shell">
           <iframe id="previewFrame" title="プレビュー"></iframe>
         </div>
@@ -295,7 +365,7 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "simple-page-editor-state-v1";
+      const STORAGE_KEY = "mini-mobile-page-editor-v1";
 
       const DEFAULT_CODE = `<!DOCTYPE html>
 <html lang="ja">
@@ -307,27 +377,33 @@
       margin: 0;
       padding: 32px 18px;
       font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #eef4ff, #f6f8ff);
+      background: linear-gradient(135deg, #edf4ff, #f7f9ff);
       color: #1f2937;
     }
+
     .card {
       max-width: 760px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.95);
-      border-radius: 24px;
-      padding: 32px;
-      box-shadow: 0 18px 48px rgba(37, 99, 235, 0.12);
+      background: rgba(255,255,255,0.96);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.10);
     }
+
     h1 {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: -0.04em;
     }
+
     p {
+      margin: 0;
       line-height: 1.8;
       color: #4b5563;
       font-size: 1rem;
     }
-    .button {
+
+    .btn {
       display: inline-block;
       margin-top: 18px;
       background: #2563eb;
@@ -341,9 +417,9 @@
 </head>
 <body>
   <div class="card">
-    <h1>スマホ向けプレビュー</h1>
-    <p>ここに既存のHTMLコードを貼り付けて、部分的な編集やデザイン確認を行えます。</p>
-    <a class="button" href="#">サンプルボタン</a>
+    <h1>ミニマル編集ツール</h1>
+    <p>ここに既存のHTMLコードを貼り付けて、部分編集やデザイン確認を行えます。</p>
+    <a class="btn" href="#">サンプルボタン</a>
   </div>
 </body>
 </html>`;
@@ -355,6 +431,7 @@
       const redoBtn = document.getElementById("redoBtn");
       const copyBtn = document.getElementById("copyBtn");
       const themeBtn = document.getElementById("themeBtn");
+      const statusTag = document.getElementById("statusTag");
       const tabs = [...document.querySelectorAll(".tab")];
 
       const state = {
@@ -367,13 +444,13 @@
 
       function loadState() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return;
+          const savedRaw = localStorage.getItem(STORAGE_KEY);
+          if (!savedRaw) return;
 
-          const saved = JSON.parse(raw);
-          state.code = typeof saved.code === "string" ? saved.code : DEFAULT_CODE;
-          state.theme = saved.theme === "dark" ? "dark" : "light";
-          state.activeTab = saved.activeTab === "preview" ? "preview" : "editor";
+          const saved = JSON.parse(savedRaw);
+          if (typeof saved.code === "string") state.code = saved.code;
+          if (saved.theme === "dark") state.theme = "dark";
+          if (saved.activeTab === "preview") state.activeTab = "preview";
         } catch (error) {
           console.warn("保存データの読込に失敗しました", error);
         }
@@ -381,12 +458,11 @@
 
       function saveState() {
         try {
-          const payload = {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
             code: state.code,
             theme: state.theme,
             activeTab: state.activeTab
-          };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+          }));
         } catch (error) {
           console.warn("保存に失敗しました", error);
         }
@@ -416,14 +492,16 @@
         redoBtn.disabled = state.historyIndex >= state.history.length - 1;
       }
 
-      function pushHistory(value) {
-        if (state.history[state.historyIndex] === value) return;
+      function pushHistory(nextCode) {
+        if (state.history[state.historyIndex] === nextCode) return;
 
         state.history = state.history.slice(0, state.historyIndex + 1);
-        state.history.push(value);
-        if (state.history.length > 80) {
+        state.history.push(nextCode);
+
+        if (state.history.length > 120) {
           state.history.shift();
         }
+
         state.historyIndex = state.history.length - 1;
         updateButtons();
       }
@@ -443,22 +521,22 @@
 
       async function copyAll() {
         const text = state.code;
+
         try {
           await navigator.clipboard.writeText(text);
           copyBtn.textContent = "✅";
-          copyBtn.classList.add("primary");
-          setTimeout(() => {
-            copyBtn.textContent = "📝";
-          }, 800);
+          setTimeout(() => { copyBtn.textContent = "📝"; }, 900);
         } catch (error) {
           editor.focus();
           editor.select();
           document.execCommand("copy");
           copyBtn.textContent = "✅";
-          setTimeout(() => {
-            copyBtn.textContent = "📝";
-          }, 800);
+          setTimeout(() => { copyBtn.textContent = "📝"; }, 900);
         }
+      }
+
+      function setStatus(text) {
+        statusTag.textContent = text;
       }
 
       function init() {
@@ -479,19 +557,28 @@
           pushHistory(nextCode);
           renderPreview();
           saveState();
+          setStatus("編集中");
         });
+
+        editor.addEventListener("focus", () => setStatus("編集中"));
+        editor.addEventListener("blur", () => setStatus("保存済み"));
 
         undoBtn.addEventListener("click", () => {
           if (state.historyIndex <= 0) return;
           applyHistory(state.historyIndex - 1);
+          setStatus("戻しました");
         });
 
         redoBtn.addEventListener("click", () => {
           if (state.historyIndex >= state.history.length - 1) return;
           applyHistory(state.historyIndex + 1);
+          setStatus("やり直しました");
         });
 
-        copyBtn.addEventListener("click", copyAll);
+        copyBtn.addEventListener("click", async () => {
+          await copyAll();
+          setStatus("コピー済み");
+        });
 
         themeBtn.addEventListener("click", () => {
           state.theme = state.theme === "dark" ? "light" : "dark";
