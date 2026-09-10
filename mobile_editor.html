@@ -3,36 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mini Mobile Page Editor</title>
+  <title>Mobile Editor</title>
   <style>
     :root {
-      --bg: #edf2f8;
-      --panel: rgba(255,255,255,0.88);
+      --bg: #eef3f9;
+      --bg-2: #e9eef8;
+      --panel: rgba(255, 255, 255, 0.92);
       --panel-strong: #ffffff;
       --panel-soft: #f4f7fb;
       --text: #1f2937;
       --muted: #6b7280;
-      --line: #dfe7f3;
-      --accent: #5b7cff;
-      --accent-soft: rgba(91,124,255,0.12);
-      --shadow: rgba(15, 23, 42, 0.08);
-      --editor-bg: #f8fafc;
+      --line: #d9e1ee;
+      --accent: #4f76ff;
+      --accent-soft: rgba(79, 118, 255, 0.12);
       --preview-bg: #ffffff;
+      --shadow: rgba(31, 41, 55, 0.10);
+      --editor-bg: #f8fafd;
     }
 
     body[data-theme="dark"] {
       --bg: #0f172a;
-      --panel: rgba(17,24,39,0.9);
+      --bg-2: #101b2f;
+      --panel: rgba(17, 24, 39, 0.92);
       --panel-strong: #111827;
       --panel-soft: #172336;
-      --text: #edf3ff;
+      --text: #e6edf8;
       --muted: #a0aec0;
       --line: #2d3b51;
-      --accent: #8aa7ff;
-      --accent-soft: rgba(138,167,255,0.14);
-      --shadow: rgba(2, 6, 23, 0.42);
-      --editor-bg: #101c2d;
+      --accent: #82a7ff;
+      --accent-soft: rgba(130, 167, 255, 0.14);
       --preview-bg: #0b1220;
+      --shadow: rgba(2, 6, 23, 0.38);
+      --editor-bg: #111b2d;
     }
 
     * { box-sizing: border-box; }
@@ -41,13 +43,15 @@
       margin: 0;
       height: 100%;
       font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top left, rgba(79,118,255,0.08), transparent 28%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
       color: var(--text);
       transition: background 0.2s ease, color 0.2s ease;
     }
 
     body {
-      padding: 10px;
+      padding: 14px;
     }
 
     button, textarea {
@@ -55,53 +59,54 @@
     }
 
     .app {
-      max-width: 1400px;
+      max-width: 1500px;
       margin: 0 auto;
-      min-height: calc(100vh - 20px);
+      min-height: calc(100vh - 28px);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .toolbar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 8px 18px var(--shadow);
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      padding: 8px 8px;
-      border-radius: 14px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      box-shadow: 0 8px 18px var(--shadow);
+      gap: 10px;
+      backdrop-filter: blur(8px);
       position: sticky;
       top: 8px;
-      z-index: 10;
-      backdrop-filter: blur(8px);
+      z-index: 20;
     }
 
     .toolbar-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      min-width: 0;
       flex: 0 0 auto;
     }
 
     .brand {
-      width: 24px;
-      height: 24px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, var(--accent), #7dd3fc);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 800;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 14px rgba(91,124,255,0.2);
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), #7dd3fc);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      box-shadow: 0 8px 18px rgba(79, 118, 255, 0.24);
     }
 
-    .brand-name {
-      font-size: 0.72rem;
+    .brand-label {
+      font-size: 0.76rem;
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -112,13 +117,13 @@
     .tabs {
       display: flex;
       align-items: center;
-      justify-content: center;
-      flex: 1 1 auto;
       gap: 4px;
       padding: 3px;
       background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 12px;
+      flex: 1 1 auto;
+      justify-content: center;
       min-width: 0;
     }
 
@@ -126,49 +131,58 @@
       border: none;
       background: transparent;
       color: var(--muted);
-      padding: 7px 10px;
       border-radius: 9px;
-      font-size: 0.8rem;
+      padding: 7px 12px;
       font-weight: 700;
+      font-size: 0.82rem;
       cursor: pointer;
-      line-height: 1;
-      min-width: 72px;
       transition: all 0.2s ease;
+      min-width: 90px;
+      line-height: 1;
     }
 
     .tab.is-active {
       background: var(--accent-soft);
       color: var(--accent);
-      box-shadow: inset 0 0 0 1px rgba(91,124,255,0.06);
+      box-shadow: inset 0 0 0 1px rgba(79, 118, 255, 0.08);
     }
 
     .actions {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
       flex: 0 0 auto;
     }
 
     .icon-btn {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: transparent;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0;
       user-select: none;
-      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+      padding: 0;
     }
 
     .icon-btn:hover {
       transform: translateY(-1px);
       border-color: var(--accent);
+    }
+
+    .icon-btn:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      transform: none;
+      border-color: var(--line);
     }
 
     .icon-btn.primary {
@@ -177,26 +191,22 @@
       color: var(--accent);
     }
 
-    .icon-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-      border-color: var(--line);
-    }
-
     .panels {
-      display: block;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.42fr);
+      gap: 10px;
       flex: 1;
       min-height: 0;
     }
 
     .panel {
-      display: none;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 16px;
-      box-shadow: 0 8px 18px var(--shadow);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px var(--shadow);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
       min-height: 0;
     }
 
@@ -205,61 +215,68 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 8px 10px;
+      padding: 9px 12px;
       border-bottom: 1px solid var(--line);
-      background: var(--panel-soft);
+      background: linear-gradient(180deg, var(--panel-soft), rgba(255,255,255,0));
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.76rem;
       font-weight: 800;
       letter-spacing: 0.03em;
     }
 
-    .header-tag {
+    .panel-header .header-tag {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 4px 6px;
+      padding: 4px 7px;
       border-radius: 999px;
       border: 1px solid var(--line);
       background: var(--panel-strong);
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       font-weight: 700;
     }
 
     .editor-panel {
-      display: flex;
-      flex-direction: column;
+      min-height: 300px;
     }
 
     .editor-wrap {
       background: var(--editor-bg);
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     textarea {
+      flex: 1;
       width: 100%;
-      height: 100%;
-      min-height: 360px;
       resize: none;
       border: none;
       background: transparent;
       color: var(--text);
-      padding: 12px 12px 14px;
+      padding: 14px 14px 16px;
       font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
-      font-size: 0.88rem;
-      line-height: 1.6;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      letter-spacing: 0.01em;
       outline: none;
       tab-size: 2;
+      min-height: 360px;
     }
 
     textarea::placeholder {
       color: var(--muted);
     }
 
+    .preview-panel {
+      min-height: 300px;
+    }
+
     .preview-shell {
+      flex: 1;
       background: var(--preview-bg);
-      padding: 8px;
+      padding: 10px;
       min-height: 0;
     }
 
@@ -267,50 +284,51 @@
       display: block;
       width: 100%;
       height: 100%;
-      min-height: 380px;
+      min-height: 420px;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       background: white;
     }
 
-    .app[data-active-tab="editor"] .editor-panel {
-      display: flex;
-    }
-
-    .app[data-active-tab="preview"] .preview-panel {
-      display: flex;
-    }
-
-    @media (min-width: 900px) {
+    @media (max-width: 720px) {
       body {
-        padding: 14px;
+        padding: 10px;
       }
 
-      .panel {
-        display: flex !important;
+      .toolbar {
+        gap: 8px;
       }
 
-      .app[data-active-tab="editor"] .editor-panel,
-      .app[data-active-tab="preview"] .preview-panel {
-        display: flex;
+      .brand-label {
+        display: none;
+      }
+
+      .tab {
+        min-width: 0;
+        flex: 1;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .icon-btn {
+        width: 32px;
+        height: 32px;
       }
 
       .panels {
-        display: grid;
-        grid-template-columns: minmax(0, 1.02fr) minmax(0, 1.38fr);
-        gap: 10px;
+        display: block;
       }
 
-      .editor-panel, .preview-panel {
-        flex-direction: column;
+      .panel {
+        display: none;
       }
 
-      textarea {
-        min-height: 500px;
+      .app[data-active-tab="editor"] .editor-panel {
+        display: flex;
       }
 
-      iframe {
-        min-height: 500px;
+      .app[data-active-tab="preview"] .preview-panel {
+        display: flex;
       }
     }
   </style>
@@ -320,15 +338,15 @@
     <header class="toolbar">
       <div class="toolbar-left">
         <div class="brand">E</div>
-        <div class="brand-name">Edit</div>
+        <div class="brand-label">Editor</div>
       </div>
 
       <div class="tabs" role="tablist" aria-label="画面切替">
-        <button class="tab is-active" data-tab="editor" role="tab" aria-selected="true">
+        <button class="tab is-active" data-tab="editor" role="tab" aria-selected="true" aria-controls="editor-panel">
           編集
         </button>
-        <button class="tab" data-tab="preview" role="tab" aria-selected="false">
-          プレビュー
+        <button class="tab" data-tab="preview" role="tab" aria-selected="false" aria-controls="preview-panel">
+          確認
         </button>
       </div>
 
@@ -346,6 +364,7 @@
           <span>HTML / CSS / JS</span>
           <span class="header-tag" id="statusTag">編集中</span>
         </div>
+
         <div class="editor-wrap">
           <textarea id="editor" spellcheck="false" aria-label="コード入力欄" placeholder="既存のHTML/CSS/JSを貼り付けてください"></textarea>
         </div>
@@ -356,6 +375,7 @@
           <span>プレビュー</span>
           <span class="header-tag">Live</span>
         </div>
+
         <div class="preview-shell">
           <iframe id="previewFrame" title="プレビュー"></iframe>
         </div>
@@ -365,8 +385,7 @@
 
   <script>
     (() => {
-      const STORAGE_KEY = "mini-mobile-page-editor-v1";
-
+      const STORAGE_KEY = "simple-page-editor-state-compact-v1";
       const DEFAULT_CODE = `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -377,33 +396,33 @@
       margin: 0;
       padding: 32px 18px;
       font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #edf4ff, #f7f9ff);
+      background: linear-gradient(135deg, #eef4ff, #f7f8ff);
       color: #1f2937;
     }
 
     .card {
       max-width: 760px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.96);
-      border-radius: 22px;
-      padding: 28px;
-      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.10);
+      background: rgba(255,255,255,0.95);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(37, 99, 235, 0.12);
     }
 
     h1 {
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: clamp(2rem, 5vw, 3rem);
       letter-spacing: -0.04em;
     }
 
     p {
       margin: 0;
-      line-height: 1.8;
+      line-height: 1.85;
       color: #4b5563;
       font-size: 1rem;
     }
 
-    .btn {
+    .button {
       display: inline-block;
       margin-top: 18px;
       background: #2563eb;
@@ -417,9 +436,9 @@
 </head>
 <body>
   <div class="card">
-    <h1>ミニマル編集ツール</h1>
-    <p>ここに既存のHTMLコードを貼り付けて、部分編集やデザイン確認を行えます。</p>
-    <a class="btn" href="#">サンプルボタン</a>
+    <h1>コンパクト版エディタ</h1>
+    <p>ここに既存のHTMLコードを貼り付けて、部分編集やデザイン確認ができます。</p>
+    <a class="button" href="#">サンプルボタン</a>
   </div>
 </body>
 </html>`;
