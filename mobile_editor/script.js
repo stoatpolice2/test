@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(THEME_KEY, theme);
   }
 
-  // ---- 4. コマンド機能 (元に戻す / やり直し / 全文コピー) ----
+  // ---- 4. アイコンコマンド機能 ----
   btnUndo.addEventListener('click', () => {
     document.execCommand('undo');
     editor.focus();
@@ -84,12 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
   btnCopy.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(editor.value);
-      alert('全文をクリップボードにコピーしました');
+      alert('コピーしました');
     } catch (err) {
-      // フォールバック処理（古い端末用）
       editor.select();
       document.execCommand('copy');
-      alert('全文をクリップボードにコピーしました');
+      alert('コピーしました');
     }
   });
 });
