@@ -1,0 +1,14 @@
+[
+  {
+    "id": 2,
+    "createdAt": "2026-09-24 16:14",
+    "content": "画像添付のテストです📷",
+    "image": "images/404.webp"
+  },
+  {
+    "id": 1,
+    "createdAt": "2026-09-24 16:14",
+    "content": "SNS風のミニブログを作ってみました✨",
+    "image": null
+  }
+]

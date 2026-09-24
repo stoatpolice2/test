@@ -1,0 +1,153 @@
+:root {
+  --bg-color: #f0f8ff;        /* アリスブルーの背景 */
+  --card-bg: #ffffff;
+  --primary-color: #70c1ff;   /* 澄んだパステルブルー */
+  --primary-light: #e3f2fd;   /* 薄い水色 */
+  --accent-color: #70e4d5;    /* パステルミントグリーン */
+  --text-main: #4a5868;       /* 青みがかったダークグレー */
+  --text-sub: #9faec0;
+  --radius-lg: 20px;
+  --radius-sm: 12px;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+/* レイアウト配置 (PCは2カラム、スマホは1カラム) */
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+@media (max-width: 700px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* プロフィールカード */
+.profile-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+  height: fit-content;
+}
+
+.profile-header {
+  height: 100px;
+  background-image: url('images/header.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.profile-body {
+  padding: 0 20px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid var(--card-bg);
+  margin-top: -40px;
+  object-fit: cover;
+}
+
+.user-name {
+  margin: 0 2px;
+  font-size: 1.2rem;
+}
+
+.bio {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* タイムライン */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* 投稿カード */
+.post-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.post-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.post-time {
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+.post-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap; /* 改行をそのまま反映 */
+}
+
+.post-image {
+  margin-top: 12px;
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}

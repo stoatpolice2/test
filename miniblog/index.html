@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Mini Blog</title>
+  <!-- ファビコンの設定 -->
+  <link rel="icon" href="icon.webp" type="image/x-icon">
+  <!-- Google Fonts: 丸ゴシック調のフォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="layout">
+    <!-- 左側：プロフィールエリア -->
+    <aside class="profile-card">
+      <div class="profile-header"></div>
+      <div class="profile-body">
+        <img src="images/icon.webp" alt="アバター" class="avatar">
+        <h1 class="user-name">おこじょ</h1>
+        <p class="bio">いろいろ作るのが好きな人です</p>
+      </div>
+    </aside>
+
+    <!-- 右側：タイムラインエリア -->
+    <main class="timeline-container">
+      <div id="timeline" class="timeline">
+        <!-- JavaScriptでここに投稿カードが動的に挿入されます -->
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
